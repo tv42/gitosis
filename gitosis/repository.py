@@ -118,7 +118,7 @@ def export(git_dir, path):
             '--prefix=%s' % path,
             ],
         close_fds=True,
-        env=dict(GIT_DIR=git_dir),
+        env=dict(GIT_DIR=git_dir, GIT_WORK_TREE=os.getcwd()),
         )
     if returncode != 0:
         raise GitCheckoutIndexError('exit status %d' % returncode)
