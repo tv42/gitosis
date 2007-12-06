@@ -153,9 +153,21 @@ To actually run ``git-daemon`` in Ubuntu, put this in
 .. include:: etc-event.d-local-git-daemon
    :literal:
 
-For other operating systems, use a similar invocation in an ``init.d``
-script, ``/etc/inittab``, ``inetd.conf``, ``runit``, or something like
-that (good luck).
+For Red Hat based systems, such as Red Hat Enterprise Server, Fedora
+Core, and CentOS, the minimal survival command is to put the following in
+``/etc/rc.local``::
+
+  su git -c '/usr/bin/git-daemon --base-path=/srv/example.com/git/repositories/' &
+
+Change the base path to reflect your system.
+
+Most Linux distributions support running ``/etc/rc.local`` after all
+other startup scripts have been run, so this is a cheap way of running
+git-daemon, but not very flexible.
+
+For better management of ``git-daemon``, use a similar invocation in an
+``init.d`` script, ``/etc/inittab``, ``inetd.conf``, ``runit``, or
+something like that (good luck).
 
 Note that this short snippet is not a substitute for reading and
 understanding the relevant documentation.
