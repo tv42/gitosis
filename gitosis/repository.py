@@ -41,6 +41,7 @@ def init(
         _git,
         '--git-dir=.',
         'init',
+        '--quiet',
         ]
     if template is not None:
         args.append('--template=%s' % template)
