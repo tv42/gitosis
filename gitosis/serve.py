@@ -200,6 +200,8 @@ class Main(app.App):
             sys.exit(1)
 
         main_log.debug('Serving %s', newcmd)
-        os.execvp('git', ['git', 'shell', '-c', newcmd])
+        newenv = os.environ.copy()
+        newenv['GITOSIS_KEY'] = user
+        os.execvpe('git', ['git', 'shell', '-c', newcmd], newenv)
         main_log.error('Cannot execute git-shell.')
         sys.exit(1)
