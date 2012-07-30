@@ -68,3 +68,5 @@
 
 - get rid of username extraction from ssh key comment field, used only
   in gitosis-init
+
+- add possibility to add and manage server side hooks per repository
