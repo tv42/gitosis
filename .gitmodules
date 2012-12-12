@@ -1,0 +1,3 @@
+[submodule "gitosis.wiki"]
+	path = gitosis.wiki
+	url = git@github.com:childnode/gitosis.wiki.git
