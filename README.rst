@@ -24,7 +24,7 @@ more information.
 
 You can get ``gitosis`` via ``git`` by saying::
 
-    git clone git://eagain.net/gitosis
+    git clone git://github.com/tv42/gitosis.git
 
 And install it via::
 
