@@ -137,18 +137,18 @@ Example configuration
    :literal:
 
 
-Using git-daemon
-================
+Using ``git daemon``
+====================
 
 Anonymous read-only access to ``git`` repositories is provided by
-``git-daemon``, which is distributed as part of ``git``. But
+``git daemon``, which is distributed as part of ``git``. But
 ``gitosis`` will still help you manage it: setting ``daemon = yes`` in
 your ``gitosis.conf``, either globally in ``[gitosis]`` or
 per-repository under ``[repo REPOSITORYNAME]``, makes ``gitosis``
 create the ``git-daemon-export-ok`` files in those repository, thus
-telling ``git-daemon`` that publishing those repositories is ok.
+telling ``git daemon`` that publishing those repositories is ok.
 
-To actually run ``git-daemon`` in Ubuntu, put this in
+To actually run ``git daemon`` in Ubuntu, put this in
 ``/etc/event.d/local-git-daemon``:
 
 .. include:: etc-event.d-local-git-daemon

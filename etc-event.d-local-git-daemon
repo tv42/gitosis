@@ -1,7 +1,7 @@
 start on startup
 stop on shutdown
 
-exec /usr/bin/git-daemon \
+exec /usr/bin/git daemon \
 	--user=git --group=git \
 	--user-path=public-git \
 	--verbose \
