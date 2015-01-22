@@ -5,13 +5,3 @@
 /apidocs
 /gitosis/test/tmp
 /.coverage
-
-# debianization
-/debian/control
-/debian/files
-/debian/*.substvars
-/debian/*.debhelper
-/debian/gitosis
-/build
-/dist
-/python-build-stamp-*

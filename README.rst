@@ -30,8 +30,7 @@ And install it via::
 
     python setup.py install
 
-Though you may want to use e.g. ``--prefix=``. For Debian/Ubuntu
-users, the source is debianized.
+Though you may want to use e.g. ``--prefix=``.
 
 
 Setting up
