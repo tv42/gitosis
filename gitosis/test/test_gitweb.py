@@ -63,10 +63,8 @@ def test_projectsList_multiple():
     gitweb.generate_project_list_fp(
         config=cfg,
         fp=got)
-    eq(got.getvalue(), '''\
-quux
-foo%2Fbar John+Doe
-''')
+    eq(frozenset(got.getvalue().splitlines(True)),
+       frozenset(['quux\n', 'foo%2Fbar John+Doe\n']))
 
 def test_projectsList_multiple_globalGitwebYes():
     cfg = RawConfigParser()
@@ -84,10 +82,8 @@ def test_projectsList_multiple_globalGitwebYes():
     gitweb.generate_project_list_fp(
         config=cfg,
         fp=got)
-    eq(got.getvalue(), '''\
-quux
-foo%2Fbar John+Doe
-''')
+    eq(frozenset(got.getvalue().splitlines(True)),
+       frozenset(['quux\n', 'foo%2Fbar John+Doe\n']))
 
 def test_projectsList_reallyEndsWithGit():
     tmp = maketemp()
