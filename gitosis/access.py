@@ -1,4 +1,5 @@
 import os, logging
+import fnmatch
 from ConfigParser import NoSectionError, NoOptionError
 
 from gitosis import group
@@ -43,16 +44,17 @@ def haveAccess(config, user, mode, path):
 
         mapping = None
 
-        if path in repos:
-            log.debug(
-                'Access ok for %(user)r as %(mode)r on %(path)r'
-                % dict(
-                user=user,
-                mode=mode,
-                path=path,
-                ))
-            mapping = path
-        else:
+        for rep in repos:
+            if fnmatch.fnmatch(path, rep):
+                log.debug(
+                    'Access ok for %(user)r as %(mode)r on %(path)r'
+                    % dict(
+                    user=user,
+                    mode=mode,
+                    path=path,
+                    ))
+                mapping = path
+        if not mapping:
             try:
                 mapping = config.get('group %s' % groupname,
                                      'map %s %s' % (mode, path))

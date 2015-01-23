@@ -570,3 +570,80 @@ def test_typo_writeable():
         "Repository 'foo' config has typo \"writeable\", shou"
         +"ld be \"writable\"\n",
         )
+
+def test_simple_write_allowed_with_patten():
+    tmp = util.maketemp()
+    repository.init(os.path.join(tmp, 'foo.git'))
+    cfg = RawConfigParser()
+    cfg.add_section('gitosis')
+    cfg.set('gitosis', 'repositories', tmp)
+    generated = os.path.join(tmp, 'generated')
+    os.mkdir(generated)
+    cfg.set('gitosis', 'generate-files-in', generated)
+    cfg.add_section('group foo')
+    cfg.set('group foo', 'members', 'jdoe')
+    cfg.set('group foo', 'writable', 'foo/*')
+    got = serve.serve(
+        cfg=cfg,
+        user='jdoe',
+        command="git-receive-pack 'foo/bar'",
+    )
+    eq(got, "git-receive-pack '%s/foo/bar.git'" % tmp)
+
+def test_bad_forbiddenCommand_write_noAccess_with_pattern():
+    cfg = RawConfigParser()
+    cfg.add_section('group foo')
+    cfg.set('group foo', 'members', 'jdoe')
+    cfg.set('group foo', 'writable', 'foo/*')
+    e = assert_raises(
+        serve.ReadAccessDenied,
+        serve.serve,
+        cfg=cfg,
+        user='jdoe',
+        command="git receive-pack 'foo'",
+        )
+    eq(str(e), 'Repository read access denied')
+    assert isinstance(e, serve.AccessDenied)
+    assert isinstance(e, serve.ServingError)
+    e = assert_raises(
+        serve.ReadAccessDenied,
+        serve.serve,
+        cfg=cfg,
+        user='jdoe',
+        command="git receive-pack 'bar/foo'",
+        )
+    eq(str(e), 'Repository read access denied')
+    assert isinstance(e, serve.AccessDenied)
+    assert isinstance(e, serve.ServingError)
+
+def test_bad_forbiddenCommand_write_readAccess_with_pattern():
+    cfg = RawConfigParser()
+    cfg.add_section('group foo')
+    cfg.set('group foo', 'members', 'jdoe')
+    cfg.set('group foo', 'readonly', 'foo/*')
+    e = assert_raises(
+        serve.WriteAccessDenied,
+        serve.serve,
+        cfg=cfg,
+        user='jdoe',
+        command="git receive-pack 'foo/bar'",
+        )
+    eq(str(e), 'Repository write access denied')
+    assert isinstance(e, serve.AccessDenied)
+    assert isinstance(e, serve.ServingError)
+
+def test_bad_forbiddenCommand_read_with_pattern():
+    cfg = RawConfigParser()
+    cfg.add_section('group foo')
+    cfg.set('group foo', 'members', 'jdoe')
+    cfg.set('group foo', 'readonly', 'foo/*-bar')
+    e = assert_raises(
+        serve.ReadAccessDenied,
+        serve.serve,
+        cfg=cfg,
+        user='jdoe',
+        command="git upload-pack 'for/bar-baz'",
+        )
+    eq(str(e), 'Repository read access denied')
+    assert isinstance(e, serve.AccessDenied)
+    assert isinstance(e, serve.ServingError)
