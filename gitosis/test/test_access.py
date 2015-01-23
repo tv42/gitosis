@@ -148,3 +148,15 @@ def test_dotgit():
     cfg.set('group fooers', 'writable', 'foo/bar')
     eq(access.haveAccess(config=cfg, user='jdoe', mode='writable', path='foo/bar.git'),
        ('repositories', 'foo/bar'))
+
+def test_patterns():
+    cfg = RawConfigParser()
+    cfg.add_section('group fooers')
+    cfg.set('group fooers', 'members', 'jdoe')
+    cfg.set('group fooers', 'writable', 'foo/bar/*')
+    eq(access.haveAccess(config=cfg, user='jdoe', mode='writable', path='foo/bar/baz.git'),
+       ('repositories', 'foo/bar/baz'))
+    eq(access.haveAccess(config=cfg, user='jdoe', mode='writable', path='foo/bar.git'),
+       None)
+    eq(access.haveAccess(config=cfg, user='jdoe', mode='writable', path='foo/barbaz.git'),
+       None)
