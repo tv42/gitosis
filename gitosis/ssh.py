@@ -25,7 +25,7 @@ def readKeys(keydir):
             continue
 
         path = os.path.join(keydir, filename)
-        f = file(path)
+        f = open(path)
         for line in f:
             line = line.rstrip('\n')
             yield (basename, line)
@@ -63,15 +63,15 @@ def filterAuthorizedKeys(fp):
 def writeAuthorizedKeys(path, keydir):
     tmp = '%s.%d.tmp' % (path, os.getpid())
     try:
-        in_ = file(path)
-    except IOError, e:
+        in_ = open(path)
+    except IOError as e:
         if e.errno == errno.ENOENT:
             in_ = None
         else:
             raise
 
     try:
-        out = file(tmp, 'w')
+        out = open(tmp, 'w')
         try:
             if in_ is not None:
                 for line in filterAuthorizedKeys(in_):

@@ -27,7 +27,7 @@ To plug this into ``gitweb``, you have two choices.
 
 import os, urllib, logging
 
-from ConfigParser import NoSectionError, NoOptionError
+from configparser import NoSectionError, NoOptionError
 
 from gitosis import util
 
@@ -106,7 +106,7 @@ def generate_project_list(config, path):
     """
     tmp = '%s.%d.tmp' % (path, os.getpid())
 
-    f = file(tmp, 'w')
+    f = open(tmp, 'w')
     try:
         generate_project_list_fp(config=config, fp=f)
     finally:
@@ -157,7 +157,7 @@ def set_descriptions(config):
             'description',
             )
         tmp = '%s.%d.tmp' % (path, os.getpid())
-        f = file(tmp, 'w')
+        f = open(tmp, 'w')
         try:
             print >>f, description
         finally:

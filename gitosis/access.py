@@ -1,5 +1,5 @@
 import os, logging
-from ConfigParser import NoSectionError, NoOptionError
+from configparser import NoSectionError, NoOptionError
 
 from gitosis import group
 

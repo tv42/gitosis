@@ -141,7 +141,7 @@ def serve(
         p = topdir
         for segment in repopath.split(os.sep)[:-1]:
             p = os.path.join(p, segment)
-            util.mkdir(p, 0750)
+            util.mkdir(p, 0o750)
 
         repository.init(path=fullpath)
         gitweb.set_descriptions(
@@ -178,7 +178,7 @@ class Main(app.App):
             parser.error('Missing argument USER.')
 
         main_log = logging.getLogger('gitosis.serve.main')
-        os.umask(0022)
+        os.umask(0o022)
 
         cmd = os.environ.get('SSH_ORIGINAL_COMMAND', None)
         if cmd is None:
@@ -197,7 +197,7 @@ class Main(app.App):
                 user=user,
                 command=cmd,
                 )
-        except ServingError, e:
+        except ServingError as e:
             main_log.error('%s', e)
             sys.exit(1)
 
