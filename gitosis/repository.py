@@ -185,7 +185,7 @@ def has_initial_commit(git_dir):
         stdout=subprocess.PIPE,
         close_fds=True,
         )
-    got = child.stdout.read()
+    got = child.stdout.read().decode('utf-8')
     returncode = child.wait()
     if returncode != 0:
         raise GitRevParseError('exit status %d' % returncode)

@@ -87,8 +87,11 @@ def init_admin_repository(
         # ConfigParser does not guarantee order, so jump through hoops
         # to make sure [gitosis] is first
         cfg_file = StringIO()
-        print >>cfg_file, '[gitosis]'
-        print >>cfg_file
+        print('[gitosis]', file=cfg_file)
+        #print('', end="", file=cfg_file)
+
+        #print >>cfg_file, '[gitosis]'
+        #print >>cfg_file
         cfg = RawConfigParser()
         cfg.add_section('group gitosis-admin')
         cfg.set('group gitosis-admin', 'members', user)
