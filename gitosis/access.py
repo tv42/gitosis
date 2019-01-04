@@ -33,56 +33,98 @@ def haveAccess(config, user, mode, path):
             ))
         path = basename
 
-    for groupname in group.getMembership(config=config, user=user):
-        try:
-            repos = config.get('group %s' % groupname, mode)
-        except (NoSectionError, NoOptionError):
-            repos = []
-        else:
-            repos = repos.split()
+    # First test an explicit '[user %s]' section
+    log.debug(
+        'Checking for explicit access for %(user)r as %(mode)r on %(path)r'
+	% dict(
+        user=user,
+        mode=mode,
+        path=path,
+        ))
 
-        mapping = None
+    try:
+	repos = config.get('user %s' % user, mode)
+    except (NoSectionError, NoOptionError):
+        repos = []
+    else:
+        log.debug(
+            'Found section for %(user)r as %(mode)r = %(repos)r'
+            % dict(
+            user=user,
+            mode=mode,
+            repos=repos,
+            ))
+        repos = repos.split()
 
-        if path in repos:
+    mapping = None
+    groupname = None
+
+    if path in repos:
             log.debug(
-                'Access ok for %(user)r as %(mode)r on %(path)r'
+                'Explicit access ok for %(user)r as %(mode)r on %(path)r'
                 % dict(
                 user=user,
                 mode=mode,
                 path=path,
                 ))
             mapping = path
-        else:
+    else:
+        # then go in old code
+        for groupname in group.getMembership(config=config, user=user):
             try:
-                mapping = config.get('group %s' % groupname,
-                                     'map %s %s' % (mode, path))
+                repos = config.get('group %s' % groupname, mode)
             except (NoSectionError, NoOptionError):
-                pass
+                repos = []
             else:
+                repos = repos.split()        
+
+            mapping = None        
+            if path in repos:
                 log.debug(
-                    'Access ok for %(user)r as %(mode)r on %(path)r=%(mapping)r'
+                    'Access ok for %(user)r as %(mode)r on %(path)r'
                     % dict(
                     user=user,
                     mode=mode,
                     path=path,
-                    mapping=mapping,
                     ))
-
-        if mapping is not None:
-            prefix = None
-            try:
-                prefix = config.get(
-                    'group %s' % groupname, 'repositories')
-            except (NoSectionError, NoOptionError):
+                mapping = path
+                break
+            else:
                 try:
-                    prefix = config.get('gitosis', 'repositories')
+                    mapping = config.get('group %s' % groupname,
+                                         'map %s %s' % (mode, path))
                 except (NoSectionError, NoOptionError):
-                    prefix = 'repositories'
+                    pass
+                else:
+                    log.debug(
+                        'Access ok for %(user)r as %(mode)r on %(path)r=%(mapping)r'
+                        % dict(
+                        user=user,
+                        mode=mode,
+                        path=path,
+                        mapping=mapping,
+                        ))
+                    break
 
-            log.debug(
-                'Using prefix %(prefix)r for %(path)r'
-                % dict(
-                prefix=prefix,
-                path=mapping,
-                ))
-            return (prefix, mapping)
+    # If we used a [user _] section, we consider being in the 'gitosis' group
+    if groupname is None:
+        groupname = 'gitosis'
+
+    if mapping is not None:
+        prefix = None
+        try:
+            prefix = config.get(
+                'group %s' % groupname, 'repositories')
+        except (NoSectionError, NoOptionError):
+            try:
+                prefix = config.get('gitosis', 'repositories')
+            except (NoSectionError, NoOptionError):
+                prefix = 'repositories'
+
+        log.debug(
+            'Using prefix %(prefix)r for %(path)r'
+            % dict(
+            prefix=prefix,
+            path=mapping,
+            ))
+        return (prefix, mapping)
