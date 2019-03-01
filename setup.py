@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 from setuptools import setup, find_packages
 import os
 
@@ -18,7 +18,7 @@ def subdir_contents(path):
 
 setup(
     name = "gitosis",
-    version = "0.2",
+    version = "0.3",
     packages = find_packages(),
 
     author = "Tommi Virtanen",
@@ -38,7 +38,7 @@ arbitrary commands.
 """.strip(),
     license = "GPL",
     keywords = "git scm version-control ssh",
-    url = "http://eagain.net/software/gitosis/",
+    url = "https://github.com/tv42/gitosis",
 
     entry_points = {
         'console_scripts': [
