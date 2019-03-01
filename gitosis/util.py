@@ -5,7 +5,7 @@ from ConfigParser import NoSectionError, NoOptionError
 def mkdir(*a, **kw):
     try:
         os.mkdir(*a, **kw)
-    except OSError, e:
+    except OSError as e:
         if e.errno == errno.EEXIST:
             pass
         else:

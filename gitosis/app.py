@@ -31,7 +31,7 @@ class App(object):
         cfg = self.create_config(options)
         try:
             self.read_config(options, cfg)
-        except CannotReadConfigError, e:
+        except CannotReadConfigError as e:
             log.error(str(e))
             sys.exit(1)
         self.setup_logging(cfg)
@@ -59,7 +59,7 @@ class App(object):
     def read_config(self, options, cfg):
         try:
             conffile = file(options.config)
-        except (IOError, OSError), e:
+        except (IOError, OSError) as e:
             if e.errno == errno.ENOENT:
                 # special case this because gitosis-init wants to
                 # ignore this particular error case

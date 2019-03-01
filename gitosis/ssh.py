@@ -64,7 +64,7 @@ def writeAuthorizedKeys(path, keydir):
     tmp = '%s.%d.tmp' % (path, os.getpid())
     try:
         in_ = file(path)
-    except IOError, e:
+    except IOError as e:
         if e.errno == errno.ENOENT:
             in_ = None
         else:

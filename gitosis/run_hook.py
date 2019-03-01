@@ -19,7 +19,7 @@ def post_update(cfg, git_dir):
     export = os.path.join(git_dir, 'gitosis-export')
     try:
         shutil.rmtree(export)
-    except OSError, e:
+    except OSError as e:
         if e.errno == errno.ENOENT:
             pass
         else:
@@ -63,7 +63,7 @@ class Main(app.App):
             parser.error('Missing argument HOOK.')
 
         log = logging.getLogger('gitosis.run_hook')
-        os.umask(0022)
+        os.umask(0o022)
 
         git_dir = os.environ.get('GIT_DIR')
         if git_dir is None:

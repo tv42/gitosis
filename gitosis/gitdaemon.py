@@ -20,7 +20,7 @@ def deny_export(repopath):
     p = export_ok_path(repopath)
     try:
         os.unlink(p)
-    except OSError, e:
+    except OSError as e:
         if e.errno == errno.ENOENT:
             pass
         else:
