@@ -1,10 +1,8 @@
 from nose.tools import eq_ as eq
 
 import os
-from ConfigParser import RawConfigParser
-from cStringIO import StringIO
 
-from gitosis import init, repository, run_hook
+from gitosis import init, repository, run_hook, util
 from gitosis.test.util import maketemp, readFile
 
 def test_post_update_simple():
@@ -57,7 +55,7 @@ description = blah blah
              +'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB= jdoe@host.example.com'),
             ],
         )
-    cfg = RawConfigParser()
+    cfg = util.RawConfigParser()
     cfg.add_section('gitosis')
     cfg.set('gitosis', 'repositories', repos)
     generated = os.path.join(tmp, 'generated')

@@ -1,7 +1,6 @@
 import os, logging
-from ConfigParser import NoSectionError, NoOptionError
 
-from gitosis import group
+from gitosis import group, util
 
 def haveAccess(config, user, mode, path):
     """
@@ -36,7 +35,7 @@ def haveAccess(config, user, mode, path):
     for groupname in group.getMembership(config=config, user=user):
         try:
             repos = config.get('group %s' % groupname, mode)
-        except (NoSectionError, NoOptionError):
+        except (util.NoSectionError, util.NoOptionError):
             repos = []
         else:
             repos = repos.split()
@@ -56,7 +55,7 @@ def haveAccess(config, user, mode, path):
             try:
                 mapping = config.get('group %s' % groupname,
                                      'map %s %s' % (mode, path))
-            except (NoSectionError, NoOptionError):
+            except (util.NoSectionError, util.NoOptionError):
                 pass
             else:
                 log.debug(
@@ -73,10 +72,10 @@ def haveAccess(config, user, mode, path):
             try:
                 prefix = config.get(
                     'group %s' % groupname, 'repositories')
-            except (NoSectionError, NoOptionError):
+            except (util.NoSectionError, util.NoOptionError):
                 try:
                     prefix = config.get('gitosis', 'repositories')
-                except (NoSectionError, NoOptionError):
+                except (util.NoSectionError, util.NoOptionError):
                     prefix = 'repositories'
 
             log.debug(

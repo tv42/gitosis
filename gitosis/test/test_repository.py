@@ -23,17 +23,17 @@ def test_init_simple():
     tmp = maketemp()
     path = os.path.join(tmp, 'repo.git')
     repository.init(path)
-    check_mode(path, 0750, is_dir=True)
+    check_mode(path, 0o750, is_dir=True)
     check_bare(path)
 
 def test_init_exist_dir():
     tmp = maketemp()
     path = os.path.join(tmp, 'repo.git')
-    mkdir(path, 0710)
-    check_mode(path, 0710, is_dir=True)
+    mkdir(path, 0o710)
+    check_mode(path, 0o710, is_dir=True)
     repository.init(path)
     # my weird access mode is preserved
-    check_mode(path, 0710, is_dir=True)
+    check_mode(path, 0o710, is_dir=True)
     check_bare(path)
 
 def test_init_exist_git():
@@ -41,7 +41,7 @@ def test_init_exist_git():
     path = os.path.join(tmp, 'repo.git')
     repository.init(path)
     repository.init(path)
-    check_mode(path, 0750, is_dir=True)
+    check_mode(path, 0o750, is_dir=True)
     check_bare(path)
 
 def test_init_templates():
@@ -53,7 +53,7 @@ def test_init_templates():
         )
 
     # for reproducibility
-    os.umask(0022)
+    os.umask(0o022)
 
     repository.init(path, template=templatedir)
     repository.init(path)
@@ -61,18 +61,11 @@ def test_init_templates():
     eq(got, 'i should show up\n')
     check_mode(
         os.path.join(path, 'hooks', 'post-update'),
-        0755,
+        0o755,
         is_file=True,
         )
     got = readFile(os.path.join(path, 'hooks', 'post-update'))
     eq(got, '#!/bin/sh\n# i can override standard templates\n')
-    # standard templates are there, too
-    assert (
-        # compatibility with git <1.6.0
-        os.path.isfile(os.path.join(path, 'hooks', 'pre-rebase'))
-        # for git >=1.6.0
-        or os.path.isfile(os.path.join(path, 'hooks', 'pre-rebase.sample'))
-        )
 
 def test_init_environment():
     tmp = maketemp()
@@ -91,7 +84,7 @@ PATH="${PATH#*:}"
 
 exec git "$@"
 ''')
-    os.chmod(mockgit, 0755)
+    os.chmod(mockgit, 0o755)
     magic_cookie = '%d' % random.randint(1, 100000)
     good_path = os.environ['PATH']
     try:
@@ -130,7 +123,7 @@ PATH="${PATH#*:}"
 
 exec git "$@"
 ''')
-    os.chmod(mockgit, 0755)
+    os.chmod(mockgit, 0o755)
     magic_cookie = '%d' % random.randint(1, 100000)
     good_path = os.environ['PATH']
     try:
@@ -193,6 +186,7 @@ Frobitz the quux and eschew obfuscation.
         cwd=git_dir,
         stdout=subprocess.PIPE,
         close_fds=True,
+        universal_newlines=True,
         )
     got = child.stdout.read().splitlines()
     returncode = child.wait()
@@ -226,7 +220,7 @@ PATH="${PATH#*:}"
 
 exec git "$@"
 ''')
-    os.chmod(mockgit, 0755)
+    os.chmod(mockgit, 0o755)
     repository.init(path=git_dir)
     repository.fast_import(
         git_dir=git_dir,
@@ -301,7 +295,7 @@ PATH="${PATH#*:}"
 
 exec git "$@"
 ''')
-    os.chmod(mockgit, 0755)
+    os.chmod(mockgit, 0o755)
     repository.init(path=tmp)
     repository.fast_import(
         git_dir=tmp,

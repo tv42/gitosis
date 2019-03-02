@@ -2,14 +2,14 @@
 Initialize a user account for use with gitosis.
 """
 
+from __future__ import print_function
+
 import errno
 import logging
 import os
 import sys
 
 from pkg_resources import resource_filename
-from cStringIO import StringIO
-from ConfigParser import RawConfigParser
 
 from gitosis import repository
 from gitosis import run_hook
@@ -54,7 +54,7 @@ def symlink_config(git_dir):
     tmp = '%s.%d.tmp' % (dst, os.getpid())
     try:
         os.unlink(tmp)
-    except OSError, e:
+    except OSError as e:
         if e.errno == errno.ENOENT:
             pass
         else:
@@ -80,16 +80,16 @@ def init_admin_repository(
 
     # can't rely on setuptools and all kinds of distro packaging to
     # have kept our templates executable, it seems
-    os.chmod(os.path.join(git_dir, 'hooks', 'post-update'), 0755)
+    os.chmod(os.path.join(git_dir, 'hooks', 'post-update'), 0o755)
 
     if not repository.has_initial_commit(git_dir):
         log.info('Making initial commit...')
         # ConfigParser does not guarantee order, so jump through hoops
         # to make sure [gitosis] is first
-        cfg_file = StringIO()
-        print >>cfg_file, '[gitosis]'
-        print >>cfg_file
-        cfg = RawConfigParser()
+        cfg_file = util.StringIO()
+        print('[gitosis]', file=cfg_file)
+        print(file=cfg_file)
+        cfg = util.RawConfigParser()
         cfg.add_section('group gitosis-admin')
         cfg.set('group gitosis-admin', 'members', user)
         cfg.set('group gitosis-admin', 'writable', 'gitosis-admin')
@@ -119,7 +119,7 @@ class Main(app.App):
     def handle_args(self, parser, cfg, options, args):
         super(Main, self).handle_args(parser, cfg, options, args)
 
-        os.umask(0022)
+        os.umask(0o022)
 
         log.info('Reading SSH public key...')
         pubkey = read_ssh_pubkey()
@@ -141,7 +141,7 @@ class Main(app.App):
             user=user,
             )
         log.info('Running post-update hook...')
-        util.mkdir(os.path.expanduser('~/.ssh'), 0700)
+        util.mkdir(os.path.expanduser('~/.ssh'), 0o700)
         run_hook.post_update(cfg=cfg, git_dir=admin_repository)
         log.info('Symlinking ~/.gitosis.conf to repository...')
         symlink_config(git_dir=admin_repository)

@@ -2,10 +2,10 @@ from nose.tools import eq_ as eq
 from gitosis.test.util import assert_raises, maketemp
 
 import os
-from ConfigParser import RawConfigParser
 
 from gitosis import init
 from gitosis import repository
+from gitosis.util import RawConfigParser
 
 from gitosis.test import util
 
@@ -113,7 +113,7 @@ def test_init_admin_repository():
         'hooks',
         'post-update',
         )
-    util.check_mode(hook, 0755, is_file=True)
+    util.check_mode(hook, 0o755, is_file=True)
     got = util.readFile(hook).splitlines()
     assert 'gitosis-run-hook post-update' in got
     export_dir = os.path.join(tmp, 'export')

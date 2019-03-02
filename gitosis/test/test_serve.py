@@ -1,13 +1,14 @@
 from nose.tools import eq_ as eq
 from gitosis.test.util import assert_raises
 
+import contextlib
 import logging
 import os
-from cStringIO import StringIO
-from ConfigParser import RawConfigParser
+import tempfile
 
 from gitosis import serve
 from gitosis import repository
+from gitosis.util import RawConfigParser, StringIO
 
 from gitosis.test import util
 
@@ -354,7 +355,7 @@ def test_push_inits_subdir_parent_missing():
         )
     eq(os.listdir(repositories), ['foo'])
     foo = os.path.join(repositories, 'foo')
-    util.check_mode(foo, 0750, is_dir=True)
+    util.check_mode(foo, 0o750, is_dir=True)
     eq(os.listdir(foo), ['bar.git'])
     assert os.path.isfile(os.path.join(repositories, 'foo', 'bar.git', 'HEAD'))
 
@@ -366,7 +367,7 @@ def test_push_inits_subdir_parent_exists():
     os.mkdir(repositories)
     foo = os.path.join(repositories, 'foo')
     # silly mode on purpose; not to be touched
-    os.mkdir(foo, 0751)
+    os.mkdir(foo, 0o751)
     cfg.set('gitosis', 'repositories', repositories)
     generated = os.path.join(tmp, 'generated')
     os.mkdir(generated)
@@ -380,7 +381,7 @@ def test_push_inits_subdir_parent_exists():
         command="git-receive-pack 'foo/bar.git'",
         )
     eq(os.listdir(repositories), ['foo'])
-    util.check_mode(foo, 0751, is_dir=True)
+    util.check_mode(foo, 0o751, is_dir=True)
     eq(os.listdir(foo), ['bar.git'])
     assert os.path.isfile(os.path.join(repositories, 'foo', 'bar.git', 'HEAD'))
 
@@ -424,8 +425,8 @@ def test_push_inits_no_stdout_spam():
     cfg.set('group foo', 'writable', 'foo')
     old_stdout = os.dup(1)
     try:
-        new_stdout = os.tmpfile()
-        os.dup2(new_stdout.fileno(), 1)
+        fd, temp_filename = tempfile.mkstemp()
+        os.dup2(fd, 1)
         serve.serve(
             cfg=cfg,
             user='jdoe',
@@ -434,9 +435,10 @@ def test_push_inits_no_stdout_spam():
     finally:
         os.dup2(old_stdout, 1)
         os.close(old_stdout)
-    new_stdout.seek(0)
-    got = new_stdout.read()
-    new_stdout.close()
+    with os.fdopen(fd) as new_stdout:
+        new_stdout.seek(0)
+        got = new_stdout.read()
+    os.unlink(temp_filename)
     eq(got, '')
     eq(os.listdir(repositories), ['foo.git'])
     assert os.path.isfile(os.path.join(repositories, 'foo.git', 'HEAD'))

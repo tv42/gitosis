@@ -1,6 +1,7 @@
 from nose.tools import eq_ as eq
 
 import errno
+import functools
 import os
 import shutil
 import stat
@@ -9,7 +10,7 @@ import sys
 def mkdir(*a, **kw):
     try:
         os.mkdir(*a, **kw)
-    except OSError, e:
+    except OSError as e:
         if e.errno == errno.EEXIST:
             pass
         else:
@@ -27,7 +28,7 @@ def maketemp():
     tmp = os.path.join(tmp, name)
     try:
         shutil.rmtree(tmp)
-    except OSError, e:
+    except OSError as e:
         if e.errno == errno.ENOENT:
             pass
         else:
@@ -37,20 +38,13 @@ def maketemp():
 
 def writeFile(path, content):
     tmp = '%s.tmp' % path
-    f = file(tmp, 'w')
-    try:
+    with open(tmp, 'w') as f:
         f.write(content)
-    finally:
-        f.close()
     os.rename(tmp, path)
 
 def readFile(path):
-    f = file(path)
-    try:
-        data = f.read()
-    finally:
-        f.close()
-    return data
+    with open(path) as f:
+        return f.read()
 
 def assert_raises(excClass, callableObj, *args, **kwargs):
     """
@@ -58,7 +52,7 @@ def assert_raises(excClass, callableObj, *args, **kwargs):
     """
     try:
         callableObj(*args, **kwargs)
-    except excClass, e:
+    except excClass as e:
         return e
     else:
         if hasattr(excClass,'__name__'): excName = excClass.__name__
@@ -74,3 +68,6 @@ def check_mode(path, mode, is_file=None, is_dir=None):
 
     got = stat.S_IMODE(st.st_mode)
     eq(got, mode, 'File mode %04o!=%04o for %s' % (got, mode, path))
+
+def partial_next(gen):
+    return functools.partial(next, gen)

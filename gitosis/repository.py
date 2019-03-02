@@ -36,7 +36,7 @@ def init(
     if _git is None:
         _git = 'git'
 
-    util.mkdir(path, 0750)
+    util.mkdir(path, 0o750)
     args = [
         _git,
         '--git-dir=.',
@@ -80,6 +80,7 @@ def fast_import(
         cwd=git_dir,
         stdin=subprocess.PIPE,
         close_fds=True,
+        universal_newlines=True,
         )
     files = list(files)
     for index, (path, content) in enumerate(files):
@@ -131,7 +132,7 @@ class GitCheckoutIndexError(GitExportError):
 def export(git_dir, path):
     try:
         os.mkdir(path)
-    except OSError, e:
+    except OSError as e:
         if e.errno == errno.EEXIST:
             pass
         else:
@@ -184,6 +185,7 @@ def has_initial_commit(git_dir):
         cwd=git_dir,
         stdout=subprocess.PIPE,
         close_fds=True,
+        universal_newlines=True,
         )
     got = child.stdout.read()
     returncode = child.wait()
