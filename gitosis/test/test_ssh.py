@@ -1,10 +1,9 @@
 from nose.tools import eq_ as eq, assert_raises
 
 import os
-from cStringIO import StringIO
 
-from gitosis import ssh
-from gitosis.test.util import mkdir, maketemp, writeFile, readFile
+from gitosis import ssh, util
+from gitosis.test.util import mkdir, maketemp, writeFile, readFile, partial_next
 
 def _key(s):
     return ''.join(s.split('\n')).strip()
@@ -29,7 +28,7 @@ class ReadKeys_Test(object):
         empty = os.path.join(tmp, 'empty')
         mkdir(empty)
         gen = ssh.readKeys(keydir=empty)
-        assert_raises(StopIteration, gen.next)
+        assert_raises(StopIteration, partial_next(gen))
 
     def test_ignore_dot(self):
         tmp = maketemp()
@@ -37,7 +36,7 @@ class ReadKeys_Test(object):
         mkdir(keydir)
         writeFile(os.path.join(keydir, '.jdoe.pub'), KEY_1+'\n')
         gen = ssh.readKeys(keydir=keydir)
-        assert_raises(StopIteration, gen.next)
+        assert_raises(StopIteration, partial_next(gen))
 
     def test_ignore_nonpub(self):
         tmp = maketemp()
@@ -45,7 +44,7 @@ class ReadKeys_Test(object):
         mkdir(keydir)
         writeFile(os.path.join(keydir, 'jdoe.xub'), KEY_1+'\n')
         gen = ssh.readKeys(keydir=keydir)
-        assert_raises(StopIteration, gen.next)
+        assert_raises(StopIteration, partial_next(gen))
 
     def test_one(self):
         tmp = maketemp()
@@ -54,8 +53,8 @@ class ReadKeys_Test(object):
         writeFile(os.path.join(keydir, 'jdoe.pub'), KEY_1+'\n')
 
         gen = ssh.readKeys(keydir=keydir)
-        eq(gen.next(), ('jdoe', KEY_1))
-        assert_raises(StopIteration, gen.next)
+        eq(next(gen), ('jdoe', KEY_1))
+        assert_raises(StopIteration, partial_next(gen))
 
     def test_two(self):
         tmp = maketemp()
@@ -104,19 +103,19 @@ class GenerateAuthorizedKeys_Test(object):
             yield ('jdoe', KEY_1)
             yield ('wsmith', KEY_2)
         gen = ssh.generateAuthorizedKeys(k())
-        eq(gen.next(), ssh.COMMENT)
-        eq(gen.next(), (
+        eq(next(gen), ssh.COMMENT)
+        eq(next(gen), (
             'command="gitosis-serve jdoe",no-port-forwarding,no-X11-f'
             +'orwarding,no-agent-forwarding,no-pty %s' % KEY_1))
-        eq(gen.next(), (
+        eq(next(gen), (
             'command="gitosis-serve wsmith",no-port-forwarding,no-X11'
             +'-forwarding,no-agent-forwarding,no-pty %s' % KEY_2))
-        assert_raises(StopIteration, gen.next)
+        assert_raises(StopIteration, partial_next(gen))
 
 
 class FilterAuthorizedKeys_Test(object):
     def run(self, s):
-        f = StringIO(s)
+        f = util.StringIO(s)
         lines = ssh.filterAuthorizedKeys(f)
         got = ''.join(['%s\n' % line for line in lines])
         return got
@@ -171,8 +170,7 @@ class WriteAuthorizedKeys_Test(object):
     def test_simple(self):
         tmp = maketemp()
         path = os.path.join(tmp, 'authorized_keys')
-        f = file(path, 'w')
-        try:
+        with open(path, 'w') as f:
             f.write('''\
 # foo
 bar
@@ -181,8 +179,6 @@ command="/foo/bar/baz/gitosis-serve wsmith",no-port-forwarding,\
 no-X11-forwarding,no-agent-forwarding,no-pty %(key_2)s
 baz
 ''' % dict(key_2=KEY_2))
-        finally:
-            f.close()
         keydir = os.path.join(tmp, 'one')
         mkdir(keydir)
         writeFile(os.path.join(keydir, 'jdoe.pub'), KEY_1+'\n')

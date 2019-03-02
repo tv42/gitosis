@@ -66,13 +66,6 @@ def test_init_templates():
         )
     got = readFile(os.path.join(path, 'hooks', 'post-update'))
     eq(got, '#!/bin/sh\n# i can override standard templates\n')
-    # standard templates are there, too
-    assert (
-        # compatibility with git <1.6.0
-        os.path.isfile(os.path.join(path, 'hooks', 'pre-rebase'))
-        # for git >=1.6.0
-        or os.path.isfile(os.path.join(path, 'hooks', 'pre-rebase.sample'))
-        )
 
 def test_init_environment():
     tmp = maketemp()
@@ -193,6 +186,7 @@ Frobitz the quux and eschew obfuscation.
         cwd=git_dir,
         stdout=subprocess.PIPE,
         close_fds=True,
+        universal_newlines=True,
         )
     got = child.stdout.read().splitlines()
     returncode = child.wait()

@@ -2,11 +2,9 @@ import errno
 import logging
 import os
 
-from ConfigParser import NoSectionError, NoOptionError
+from gitosis import util
 
 log = logging.getLogger('gitosis.gitdaemon')
-
-from gitosis import util
 
 def export_ok_path(repopath):
     p = os.path.join(repopath, 'git-daemon-export-ok')
@@ -14,7 +12,7 @@ def export_ok_path(repopath):
 
 def allow_export(repopath):
     p = export_ok_path(repopath)
-    file(p, 'a').close()
+    open(p, 'a').close()
 
 def deny_export(repopath):
     p = export_ok_path(repopath)
@@ -39,7 +37,7 @@ def set_export_ok(config):
 
     try:
         global_enable = config.getboolean('gitosis', 'daemon')
-    except (NoSectionError, NoOptionError):
+    except (util.NoSectionError, util.NoOptionError):
         global_enable = False
     log.debug(
         'Global default is %r',
@@ -79,7 +77,7 @@ def set_export_ok(config):
             assert ext == '.git'
             try:
                 enable = config.getboolean('repo %s' % name, 'daemon')
-            except (NoSectionError, NoOptionError):
+            except (util.NoSectionError, util.NoOptionError):
                 enable = global_enable
 
             if enable:

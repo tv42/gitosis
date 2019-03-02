@@ -80,6 +80,7 @@ def fast_import(
         cwd=git_dir,
         stdin=subprocess.PIPE,
         close_fds=True,
+        universal_newlines=True,
         )
     files = list(files)
     for index, (path, content) in enumerate(files):
@@ -184,6 +185,7 @@ def has_initial_commit(git_dir):
         cwd=git_dir,
         stdout=subprocess.PIPE,
         close_fds=True,
+        universal_newlines=True,
         )
     got = child.stdout.read()
     returncode = child.wait()

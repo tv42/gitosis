@@ -2,10 +2,10 @@ from nose.tools import eq_ as eq
 from gitosis.test.util import assert_raises, maketemp
 
 import os
-from ConfigParser import RawConfigParser
 
 from gitosis import init
 from gitosis import repository
+from gitosis.util import RawConfigParser
 
 from gitosis.test import util
 

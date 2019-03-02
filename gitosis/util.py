@@ -1,6 +1,15 @@
 import errno
 import os
-from ConfigParser import NoSectionError, NoOptionError
+import sys
+
+if sys.version_info.major == 2:
+    from ConfigParser import RawConfigParser, NoSectionError, NoOptionError
+    from urllib import quote_plus
+    from cStringIO import StringIO
+else:
+    from configparser import RawConfigParser, NoSectionError, NoOptionError
+    from urllib.parse import quote_plus
+    from io import StringIO
 
 def mkdir(*a, **kw):
     try:

@@ -25,9 +25,9 @@ To plug this into ``gitweb``, you have two choices.
    isolates the changes a bit more nicely. Recommended.
 """
 
-import os, urllib, logging
+from __future__ import print_function
 
-from ConfigParser import NoSectionError, NoOptionError
+import os, logging
 
 from gitosis import util
 
@@ -53,7 +53,7 @@ def generate_project_list_fp(config, fp):
 
     try:
         global_enable = config.getboolean('gitosis', 'gitweb')
-    except (NoSectionError, NoOptionError):
+    except (util.NoSectionError, util.NoOptionError):
         global_enable = False
 
     for section in config.sections():
@@ -66,7 +66,7 @@ def generate_project_list_fp(config, fp):
 
         try:
             enable = config.getboolean(section, 'gitweb')
-        except (NoSectionError, NoOptionError):
+        except (util.NoSectionError, util.NoOptionError):
             enable = global_enable
 
         if not enable:
@@ -86,13 +86,13 @@ def generate_project_list_fp(config, fp):
         response = [name]
         try:
             owner = config.get(section, 'owner')
-        except (NoSectionError, NoOptionError):
+        except (util.NoSectionError, util.NoOptionError):
             pass
         else:
             response.append(owner)
 
-        line = ' '.join([urllib.quote_plus(s) for s in response])
-        print >>fp, line
+        line = ' '.join(util.quote_plus(s) for s in response)
+        print(line, file=fp)
 
 def generate_project_list(config, path):
     """
@@ -106,11 +106,8 @@ def generate_project_list(config, path):
     """
     tmp = '%s.%d.tmp' % (path, os.getpid())
 
-    f = file(tmp, 'w')
-    try:
+    with open(tmp, 'w') as f:
         generate_project_list_fp(config=config, fp=f)
-    finally:
-        f.close()
 
     os.rename(tmp, path)
 
@@ -133,7 +130,7 @@ def set_descriptions(config):
 
         try:
             description = config.get(section, 'description')
-        except (NoSectionError, NoOptionError):
+        except (util.NoSectionError, util.NoOptionError):
             continue
 
         if not description:
@@ -157,9 +154,6 @@ def set_descriptions(config):
             'description',
             )
         tmp = '%s.%d.tmp' % (path, os.getpid())
-        f = file(tmp, 'w')
-        try:
-            print >>f, description
-        finally:
-            f.close()
+        with open(tmp, 'w') as f:
+            print(description, file=f)
         os.rename(tmp, path)

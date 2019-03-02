@@ -1,9 +1,8 @@
 from nose.tools import eq_ as eq
 
 import os
-from ConfigParser import RawConfigParser
 
-from gitosis import gitdaemon
+from gitosis import gitdaemon, util
 from gitosis.test.util import maketemp, writeFile
 
 def exported(path):
@@ -14,7 +13,7 @@ def exported(path):
 def test_git_daemon_export_ok_repo_missing():
     # configured but not created yet; before first push
     tmp = maketemp()
-    cfg = RawConfigParser()
+    cfg = util.RawConfigParser()
     cfg.add_section('gitosis')
     cfg.set('gitosis', 'repositories', tmp)
     cfg.add_section('repo foo')
@@ -26,7 +25,7 @@ def test_git_daemon_export_ok_repo_missing():
 def test_git_daemon_export_ok_repo_missing_parent():
     # configured but not created yet; before first push
     tmp = maketemp()
-    cfg = RawConfigParser()
+    cfg = util.RawConfigParser()
     cfg.add_section('gitosis')
     cfg.set('gitosis', 'repositories', tmp)
     cfg.add_section('repo foo/bar')
@@ -38,7 +37,7 @@ def test_git_daemon_export_ok_allowed():
     tmp = maketemp()
     path = os.path.join(tmp, 'foo.git')
     os.mkdir(path)
-    cfg = RawConfigParser()
+    cfg = util.RawConfigParser()
     cfg.add_section('gitosis')
     cfg.set('gitosis', 'repositories', tmp)
     cfg.add_section('repo foo')
@@ -51,7 +50,7 @@ def test_git_daemon_export_ok_allowed_already():
     path = os.path.join(tmp, 'foo.git')
     os.mkdir(path)
     writeFile(gitdaemon.export_ok_path(path), '')
-    cfg = RawConfigParser()
+    cfg = util.RawConfigParser()
     cfg.add_section('gitosis')
     cfg.set('gitosis', 'repositories', tmp)
     cfg.add_section('repo foo')
@@ -64,7 +63,7 @@ def test_git_daemon_export_ok_denied():
     path = os.path.join(tmp, 'foo.git')
     os.mkdir(path)
     writeFile(gitdaemon.export_ok_path(path), '')
-    cfg = RawConfigParser()
+    cfg = util.RawConfigParser()
     cfg.add_section('gitosis')
     cfg.set('gitosis', 'repositories', tmp)
     cfg.add_section('repo foo')
@@ -76,7 +75,7 @@ def test_git_daemon_export_ok_denied_already():
     tmp = maketemp()
     path = os.path.join(tmp, 'foo.git')
     os.mkdir(path)
-    cfg = RawConfigParser()
+    cfg = util.RawConfigParser()
     cfg.add_section('gitosis')
     cfg.set('gitosis', 'repositories', tmp)
     cfg.add_section('repo foo')
@@ -90,7 +89,7 @@ def test_git_daemon_export_ok_subdirs():
     os.mkdir(foo)
     path = os.path.join(foo, 'bar.git')
     os.mkdir(path)
-    cfg = RawConfigParser()
+    cfg = util.RawConfigParser()
     cfg.add_section('gitosis')
     cfg.set('gitosis', 'repositories', tmp)
     cfg.add_section('repo foo/bar')
@@ -103,7 +102,7 @@ def test_git_daemon_export_ok_denied_default():
     path = os.path.join(tmp, 'foo.git')
     os.mkdir(path)
     writeFile(gitdaemon.export_ok_path(path), '')
-    cfg = RawConfigParser()
+    cfg = util.RawConfigParser()
     cfg.add_section('gitosis')
     cfg.set('gitosis', 'repositories', tmp)
     cfg.add_section('repo foo')
@@ -118,7 +117,7 @@ def test_git_daemon_export_ok_denied_even_not_configured():
     path = os.path.join(tmp, 'foo.git')
     os.mkdir(path)
     writeFile(gitdaemon.export_ok_path(path), '')
-    cfg = RawConfigParser()
+    cfg = util.RawConfigParser()
     cfg.add_section('gitosis')
     cfg.set('gitosis', 'repositories', tmp)
     gitdaemon.set_export_ok(config=cfg)
@@ -138,7 +137,7 @@ def test_git_daemon_export_ok_allowed_global():
     # try to provoke an invalid allow
     writeFile(gitdaemon.export_ok_path(os.path.join(tmp, 'thud.git')), '')
 
-    cfg = RawConfigParser()
+    cfg = util.RawConfigParser()
     cfg.add_section('gitosis')
     cfg.set('gitosis', 'repositories', tmp)
     cfg.set('gitosis', 'daemon', 'yes')

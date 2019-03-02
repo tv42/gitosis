@@ -1,5 +1,5 @@
 import logging
-from ConfigParser import NoSectionError, NoOptionError
+from gitosis import util
 
 def _getMembership(config, user, seen):
     log = logging.getLogger('gitosis.group.getMembership')
@@ -14,7 +14,7 @@ def _getMembership(config, user, seen):
 
         try:
             members = config.get(section, 'members')
-        except (NoSectionError, NoOptionError):
+        except (util.NoSectionError, util.NoOptionError):
             members = []
         else:
             members = members.split()
@@ -52,4 +52,3 @@ def getMembership(config, user):
 
     # everyone is always a member of group "all"
     yield 'all'
-

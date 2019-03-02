@@ -3,7 +3,8 @@ import sys
 import logging
 import optparse
 import errno
-import ConfigParser
+
+from gitosis import util
 
 log = logging.getLogger('gitosis.app')
 
@@ -53,12 +54,13 @@ class App(object):
         return parser
 
     def create_config(self, options):
-        cfg = ConfigParser.RawConfigParser()
+        cfg = util.RawConfigParser()
         return cfg
 
     def read_config(self, options, cfg):
         try:
-            conffile = file(options.config)
+            with open(options.config) as conffile:
+                cfg.readfp(conffile)
         except (IOError, OSError) as e:
             if e.errno == errno.ENOENT:
                 # special case this because gitosis-init wants to
@@ -66,16 +68,11 @@ class App(object):
                 raise ConfigFileDoesNotExistError(str(e))
             else:
                 raise CannotReadConfigError(str(e))
-        try:
-            cfg.readfp(conffile)
-        finally:
-            conffile.close()
 
     def setup_logging(self, cfg):
         try:
             loglevel = cfg.get('gitosis', 'loglevel')
-        except (ConfigParser.NoSectionError,
-                ConfigParser.NoOptionError):
+        except (util.NoSectionError, util.NoOptionError):
             pass
         else:
             try:

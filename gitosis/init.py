@@ -2,14 +2,14 @@
 Initialize a user account for use with gitosis.
 """
 
+from __future__ import print_function
+
 import errno
 import logging
 import os
 import sys
 
 from pkg_resources import resource_filename
-from cStringIO import StringIO
-from ConfigParser import RawConfigParser
 
 from gitosis import repository
 from gitosis import run_hook
@@ -86,10 +86,10 @@ def init_admin_repository(
         log.info('Making initial commit...')
         # ConfigParser does not guarantee order, so jump through hoops
         # to make sure [gitosis] is first
-        cfg_file = StringIO()
-        print >>cfg_file, '[gitosis]'
-        print >>cfg_file
-        cfg = RawConfigParser()
+        cfg_file = util.StringIO()
+        print('[gitosis]', file=cfg_file)
+        print(file=cfg_file)
+        cfg = util.RawConfigParser()
         cfg.add_section('group gitosis-admin')
         cfg.set('group gitosis-admin', 'members', user)
         cfg.set('group gitosis-admin', 'writable', 'gitosis-admin')
