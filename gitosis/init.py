@@ -43,7 +43,7 @@ def ssh_extract_user(pubkey):
         raise InsecureSSHKeyUsername(repr(user))
 
 def initial_commit(git_dir, cfg, pubkey, user):
-    print user pubkey
+    log.info('User:', user)
     if pubkey is None:
         keyfile = 'keydir/principals'
         content = user
