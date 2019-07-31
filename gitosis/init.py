@@ -137,6 +137,7 @@ class Main(app.App):
         user = ssh_extract_user(pubkey)
         if not re.search(r"\s", pubkey):
             pubkey = None
+        logger.debug("pubkey: %s", pubkey)
         if user is None:
             log.error('Cannot parse user from SSH public key.')
             sys.exit(1)
