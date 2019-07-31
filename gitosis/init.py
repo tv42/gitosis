@@ -6,6 +6,7 @@ import errno
 import logging
 import os
 import sys
+import re
 
 from pkg_resources import resource_filename
 from cStringIO import StringIO
@@ -32,19 +33,28 @@ class InsecureSSHKeyUsername(Exception):
         return '%s: %s' % (self.__doc__, ': '.join(self.args))
 
 def ssh_extract_user(pubkey):
-    _, user = pubkey.rsplit(None, 1)
+    if re.search(r"\s", pubkey)
+        _, user = pubkey.rsplit(None, 1)
+    else:
+        user = pubkey
     if ssh.isSafeUsername(user):
         return user
     else:
         raise InsecureSSHKeyUsername(repr(user))
 
 def initial_commit(git_dir, cfg, pubkey, user):
+    if pubkey is None:
+        keyfile = 'keydir/principals'
+        content = user
+    else:
+        keyfile = 'keydir/%s.pub' % user
+        content = pubkey
     repository.fast_import(
         git_dir=git_dir,
         commit_msg='Automatic creation of gitosis repository.',
         committer='Gitosis Admin <%s>' % user,
         files=[
-            ('keydir/%s.pub' % user, pubkey),
+            (keyfile, content),
             ('gitosis.conf', cfg),
             ],
         )
@@ -124,6 +134,8 @@ class Main(app.App):
         log.info('Reading SSH public key...')
         pubkey = read_ssh_pubkey()
         user = ssh_extract_user(pubkey)
+        if not re.search(r"\s", pubkey)
+            pubkey = None
         if user is None:
             log.error('Cannot parse user from SSH public key.')
             sys.exit(1)
