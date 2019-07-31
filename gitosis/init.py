@@ -36,7 +36,7 @@ def ssh_extract_user(pubkey):
     if not re.search(r"\s", pubkey):
         _, user = pubkey.rsplit(None, 1)
     else:
-        user = pubkey
+        user = pubkey.strip()
     if ssh.isSafeUsername(user):
         return user
     else:
