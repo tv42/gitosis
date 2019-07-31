@@ -33,7 +33,7 @@ class InsecureSSHKeyUsername(Exception):
         return '%s: %s' % (self.__doc__, ': '.join(self.args))
 
 def ssh_extract_user(pubkey):
-    if not re.search(r"\s", pubkey):
+    if not bool(re.search(r"\s", pubkey)):
         _, user = pubkey.rsplit(None, 1)
     else:
         user = pubkey.strip()
@@ -135,9 +135,9 @@ class Main(app.App):
         log.info('Reading SSH public key...')
         pubkey = read_ssh_pubkey()
         user = ssh_extract_user(pubkey)
-        if not re.search(r"\s", pubkey):
+        if not bool(re.search(r"\s", pubkey)):
             pubkey = None
-        logging.debug("pubkey: %s", pubkey)
+        log.debug("pubkey: %s", pubkey)
         if user is None:
             log.error('Cannot parse user from SSH public key.')
             sys.exit(1)
