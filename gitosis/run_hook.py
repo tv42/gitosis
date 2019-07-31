@@ -51,7 +51,7 @@ def post_update(cfg, git_dir):
     principals = util.getSSHPrincipalsPath(config=cfg)
     ssh_principals.writePrincipals(
         path=principals,
-        principals=os.path.join(export, 'principals'),
+        principals=os.path.join(export, 'keydir/principals'),
         )
 
 class Main(app.App):
