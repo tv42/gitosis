@@ -34,3 +34,10 @@ def getSSHAuthorizedKeysPath(config):
     except (NoSectionError, NoOptionError):
         path = os.path.expanduser('~/.ssh/authorized_keys')
     return path
+
+def getSSHPrincipalsPath(config):
+    try:
+        path = config.get('gitosis', 'ssh-principals-path')
+    except (NoSectionError, NoOptionError):
+        path = os.path.expanduser('~/.ssh/principals')
+    return path

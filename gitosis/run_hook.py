@@ -10,6 +10,7 @@ import shutil
 
 from gitosis import repository
 from gitosis import ssh
+from gitosis import ssh_principals
 from gitosis import gitweb
 from gitosis import gitdaemon
 from gitosis import app
@@ -46,6 +47,11 @@ def post_update(cfg, git_dir):
     ssh.writeAuthorizedKeys(
         path=authorized_keys,
         keydir=os.path.join(export, 'keydir'),
+        )
+    principals = util.getSSHPrincipalsPath(config=cfg)
+    ssh.writePrincipals(
+        path=principals,
+        principals=os.path.join(export, 'principals'),
         )
 
 class Main(app.App):
