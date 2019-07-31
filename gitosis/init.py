@@ -45,7 +45,6 @@ def ssh_extract_user(pubkey):
 def initial_commit(git_dir, cfg, pubkey, user):
     log.debug('create initial commit')
     log.info('User: ' + user)
-    log.debug('pubkey: ' + pubkey)
     if pubkey is None:
         keyfile = 'keydir/principals'
         content = user
