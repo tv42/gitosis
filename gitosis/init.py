@@ -43,13 +43,17 @@ def ssh_extract_user(pubkey):
         raise InsecureSSHKeyUsername(repr(user))
 
 def initial_commit(git_dir, cfg, pubkey, user):
+    log.debug('create initial commit')
     log.info('User:', user)
+    log.debug('pubkey', pubkey)
     if pubkey is None:
         keyfile = 'keydir/principals'
         content = user
     else:
         keyfile = 'keydir/%s.pub' % user
         content = pubkey
+    log.debug('keyfile', keyfile)
+    log.debug('content', content)
     repository.fast_import(
         git_dir=git_dir,
         commit_msg='Automatic creation of gitosis repository.',
