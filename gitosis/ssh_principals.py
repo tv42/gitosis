@@ -30,6 +30,7 @@ def generatePrincipals(keys):
 
     yield COMMENT
     for (user) in keys:
+        log.debug(TEMPLATE % dict(user=user))
         yield TEMPLATE % dict(user=user)
 
 _COMMAND_RE = re.compile('^command="(/[^ "]+/)?gitosis-serve [^"]+",no-port-forw'
