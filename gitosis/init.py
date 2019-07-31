@@ -135,7 +135,7 @@ class Main(app.App):
         log.info('Reading SSH public key...')
         pubkey = read_ssh_pubkey()
         user = ssh_extract_user(pubkey)
-        if not bool(re.search(r"\s", pubkey)):
+        if not " " in pubkey:
             pubkey = None
         log.debug("pubkey: %s", pubkey)
         if user is None:
