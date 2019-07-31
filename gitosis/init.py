@@ -33,7 +33,7 @@ class InsecureSSHKeyUsername(Exception):
         return '%s: %s' % (self.__doc__, ': '.join(self.args))
 
 def ssh_extract_user(pubkey):
-    if re.search(r"\s", pubkey):
+    if not re.search(r"\s", pubkey):
         _, user = pubkey.rsplit(None, 1)
     else:
         user = pubkey
