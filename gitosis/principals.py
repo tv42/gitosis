@@ -16,46 +16,15 @@ from gitosis import gitdaemon
 from gitosis import app
 from gitosis import util
 
-def serve_principal(sshUser, principal):
-    print "Do nothing"
 
-def post_update(cfg, git_dir):
-    export = os.path.join(git_dir, 'gitosis-export')
-    try:
-        shutil.rmtree(export)
-    except OSError, e:
-        if e.errno == errno.ENOENT:
-            pass
-        else:
-            raise
-    repository.export(git_dir=git_dir, path=export)
-    os.rename(
-        os.path.join(export, 'gitosis.conf'),
-        os.path.join(export, '..', 'gitosis.conf'),
-        )
-    # re-read config to get up-to-date settings
-    cfg.read(os.path.join(export, '..', 'gitosis.conf'))
-    gitweb.set_descriptions(
-        config=cfg,
-        )
-    generated = util.getGeneratedFilesDir(config=cfg)
-    gitweb.generate_project_list(
-        config=cfg,
-        path=os.path.join(generated, 'projects.list'),
-        )
-    gitdaemon.set_export_ok(
-        config=cfg,
-        )
-    authorized_keys = util.getSSHAuthorizedKeysPath(config=cfg)
-    ssh.writeAuthorizedKeys(
-        path=authorized_keys,
-        keydir=os.path.join(export, 'keydir'),
-        )
-    principals = util.getSSHPrincipalsPath(config=cfg)
-    ssh_principals.writePrincipals(
-        path=principals,
-        principals=os.path.join(export, 'keydir/principals'),
-        )
+def serve_principal(sshUser, principals):
+    TEMPLATE=('command="gitosis-serve %(user)s",no-port-forwarding,'
+              +'no-X11-forwarding,no-agent-forwarding,no-pty %(principals)s')
+
+    for (sshUser, principals) in keys:
+        log.debug(TEMPLATE % dict(user=user))
+        yield TEMPLATE % dict(user=user, principals=principals)
+
 
 class Main(app.App):
     def create_parser(self):
@@ -69,14 +38,10 @@ class Main(app.App):
         try:
             sshUser = args.pop(0)
             principals = ' '.join(args)
-            parser.error(principals)
         except ValueError:
             parser.error('Missing argument sshUsers and/or principals.')
 
         log = logging.getLogger('gitosis.principals')
-        os.umask(0022)
-
-        git_dir = os.environ.get('GIT_DIR')
 
         if sshUser != "":
             log.info('Running serve_principal for user %s', sshUser)
