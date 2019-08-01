@@ -17,7 +17,11 @@ from gitosis import app
 from gitosis import util
 
 
-def serve_principal(sshUser, principals):
+def serve_principal(cfg, git_dir, sshUser, principals):
+    export = os.path.join(git_dir, 'gitosis-export')
+    # re-read config to get up-to-date settings
+    cfg.read(os.path.join(export, '..', 'gitosis.conf'))
+
     TEMPLATE=('command="gitosis-serve %(user)s",no-port-forwarding,'
               +'no-X11-forwarding,no-agent-forwarding,no-pty %(principals)s')
 
@@ -47,14 +51,15 @@ class Main(app.App):
 
         log = logging.getLogger('gitosis.principals')
 
+        git_dir = os.environ.get('GIT_DIR')
+        if git_dir is None:
+            log.error('Must have GIT_DIR set in enviroment')
+            sys.exit(1)
+
         if sshUser != "":
             log.info('Running serve_principal for user %s', sshUser)
-            serve_principal(sshUser, principals)
+            serve_principal(cfg, git_dir, sshUser, principals)
             log.info('Done.')
-
-#        if git_dir is None:
-#            log.error('Must have GIT_DIR set in enviroment')
-#            sys.exit(1)
 #
 #        if hook == 'post-update':
 #            log.info('Running hook %s', hook)
