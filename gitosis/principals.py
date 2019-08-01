@@ -48,10 +48,6 @@ class Main(app.App):
 
         log = logging.getLogger('gitosis.principals')
 
-        if git_dir is None:
-            log.error('Must have GIT_DIR set in enviroment')
-            sys.exit(1)
-
         if sshUser != "":
             log.info('Running serve_principal for user %s', sshUser)
             serve_principal(cfg, sshUser, principals)
