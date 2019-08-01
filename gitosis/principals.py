@@ -67,7 +67,7 @@ class Main(app.App):
 
     def handle_args(self, parser, cfg, options, args):
         try:
-            (sshUser, principals) = args
+            (sshUser,) = args
         except ValueError:
             parser.error('Missing argument sshUsers and/or principals.')
 
