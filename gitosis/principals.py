@@ -66,9 +66,10 @@ class Main(app.App):
         return parser
 
     def handle_args(self, parser, cfg, options, args):
-        parser.error(args)
         try:
-            (sshUser,) = args
+            sshUser = args.pop(0)
+            principals = ' '.join(args)
+            parser.error(principals)
         except ValueError:
             parser.error('Missing argument sshUsers and/or principals.')
 
