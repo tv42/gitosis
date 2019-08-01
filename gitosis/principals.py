@@ -23,9 +23,11 @@ def serve_principal(sshUser, principals):
 
     if '@' in sshUser:
         for user in [ sshUser, sshUser.split('@')[0] ]:
-            print TEMPLATE % dict(user=user, principals=principals)
+            print TEMPLATE % dict(user=user,
+                                  principals=getAllowedSSHPrincipals(cfg))
     else:
-        print TEMPLATE % dict(user=sshUser, principals=principals)
+        print TEMPLATE % dict(user=sshUser,
+                              principals=util.getAllowedSSHPrincipals(cfg))
 
 
 class Main(app.App):

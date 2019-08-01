@@ -41,3 +41,10 @@ def getSSHPrincipalsPath(config):
     except (NoSectionError, NoOptionError):
         path = os.path.expanduser('~/.ssh/principals')
     return path
+
+def getAllowedSSHPrincipals(config):
+    try:
+        principals = config.get('gitosis', 'allowedPrincipals')
+    except (NoSectionError, NoOptionError):
+        principals = "git"
+    return path
