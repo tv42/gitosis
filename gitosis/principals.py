@@ -78,7 +78,7 @@ class Main(app.App):
 
         if sshUser != "":
             log.info('Running serve_principal for user %s', sshUser)
-            serve_printipal(sshUser, principal)
+            serve_principal(sshUser, principal)
             log.info('Done.')
 
 #        if git_dir is None:
