@@ -22,7 +22,7 @@ def serve_principal(sshUser, principals):
               +'no-X11-forwarding,no-agent-forwarding,no-pty %(principals)s')
 
     if '@' in sshUser:
-        for user in [ sshUser, sshUser.split('@')[0] ]
+        for user in [ sshUser, sshUser.split('@')[0] ]:
             print TEMPLATE % dict(user=user, principals=principals)
     else:
         print TEMPLATE % dict(user=sshUser, principals=principals)
