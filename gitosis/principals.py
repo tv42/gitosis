@@ -66,6 +66,7 @@ class Main(app.App):
         return parser
 
     def handle_args(self, parser, cfg, options, args):
+        parser.error(args)
         try:
             (sshUser,) = args
         except ValueError:
