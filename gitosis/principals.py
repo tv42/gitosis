@@ -23,7 +23,7 @@ def serve_principal(sshUser, principals):
 
     for (sshUser, principals) in keys:
         log.debug(TEMPLATE % dict(user=user))
-        yield TEMPLATE % dict(user=user, principals=principals)
+        print TEMPLATE % dict(user=user, principals=principals)
 
 
 class Main(app.App):
