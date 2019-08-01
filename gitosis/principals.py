@@ -23,10 +23,8 @@ def serve_principal(sshUser, principals):
 
     if '@' in sshUser:
         for user in [ sshUser, sshUser.split('@')[0] ]:
-            log.debug(TEMPLATE % dict(user=user, principals=principals))
             print TEMPLATE % dict(user=user, principals=principals)
     else:
-        log.debug(TEMPLATE % dict(user=user, principals=principals))
         print TEMPLATE % dict(user=sshUser, principals=principals)
 
 
