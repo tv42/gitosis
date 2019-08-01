@@ -72,6 +72,7 @@ class Main(app.App):
         os.umask(0022)
 
         git_dir = os.environ.get('GIT_DIR')
+        log.debug("GIT_DIR", git_dir)
         if git_dir is None:
             log.error('Must have GIT_DIR set in enviroment')
             sys.exit(1)
