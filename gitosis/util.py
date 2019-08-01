@@ -47,4 +47,4 @@ def getAllowedSSHPrincipals(config):
         principals = config.get('gitosis', 'allowedPrincipals')
     except (NoSectionError, NoOptionError):
         principals = "git"
-    return path
+    return principals
