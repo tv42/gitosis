@@ -22,13 +22,8 @@ def serve_principal(cfg, sshUser, principals):
     TEMPLATE=('command="gitosis-serve %(user)s",no-port-forwarding,'
               +'no-X11-forwarding,no-agent-forwarding,no-pty %(principals)s')
 
-    if '@' in sshUser:
-        for user in [ sshUser.split('@')[0] ]:
-            print TEMPLATE % dict(user=user,
-                                  principals=util.getAllowedSSHPrincipals(config=cfg))
-    else:
-        print TEMPLATE % dict(user=sshUser,
-                              principals=util.getAllowedSSHPrincipals(config=cfg))
+    print TEMPLATE % dict(user=sshUser,
+                          principals=util.getAllowedSSHPrincipals(config=cfg))
 
 
 class Main(app.App):
