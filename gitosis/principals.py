@@ -10,7 +10,6 @@ import shutil
 
 from gitosis import repository
 from gitosis import ssh
-from gitosis import ssh_principals
 from gitosis import gitweb
 from gitosis import gitdaemon
 from gitosis import app

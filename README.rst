@@ -250,28 +250,7 @@ Access is only given, if you have one of the allowed principals in your certific
 ### parallel use of principals/certificates an pubkeys
 
 It is possible, to use pubkeys in parallel to these principals from certificates. Just as described above. If you have a user, which has no certificate from your ssh-CA, just add his
-public-sshkey in the keydir.
-
-### static principal-files
-Static principal-files have a big drawback in this usecase. Always the first found match is taken. Every user has the same alloewd principals (allowedPrincipals from config). I don't know, how to
-get a match from the current user to the right principal-line... The first one is taken, which matches, so every time, the first line is taken... 
-
-If you know, how to solve that, let me know. So i use only the dynamic AuthorizedPrincipalCommand
-
-If you don't want to use the AuthorizedPrincipalCommand, you get a statically generated principal-file on each commit of your gitosis-admin repo. 
-Just add::
-    
-    AuthorizedPrincipalsFile /etc/ssh/userprincipals/%u
-
-to your sshd_config instead of the  "Match User git"-section from above, before all of your matching-sections. This file MUST point (use symlinks) to::
-
-    /home/git/.ssh/principals
-
-Or if you want all of your principal-files in your users homedirectories, you can use::
-
-    AuthorizedPrincipalsFile %h/.ssh/principals
-
-It belongs to your setup.
+public-sshkey in the keydir. (not tested now)
 
 
 Contact
