@@ -253,6 +253,11 @@ It is possible, to use pubkeys in parallel to these principals from certificates
 public-sshkey in the keydir.
 
 ### static principal-files
+Static principal-files have a big drawback in this usecase. Always the first found match is taken. Every user has the same alloewd principals (allowedPrincipals from config). I don't know, how to
+get a match from the current user to the right principal-line... The first one is taken, which matches, so every time, the first line is taken... 
+
+If you know, how to solve that, let me know. So i use only the dynamic AuthorizedPrincipalCommand
+
 If you don't want to use the AuthorizedPrincipalCommand, you get a statically generated principal-file on each commit of your gitosis-admin repo. 
 Just add::
     
