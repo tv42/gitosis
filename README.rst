@@ -253,5 +253,7 @@ Contact
 You can email the author at ``tv@eagain.net``, or hop on
 ``irc.freenode.net`` channel ``#git`` and hope for the best.
 
+For ssh-certificates and principals, please contact wertstoffe@xundeenergie.at
+
 There will be more, keep an eye on http://eagain.net/ and/or the git
 mailing list.
