@@ -1,6 +1,8 @@
 import os, errno, re
 import logging
 
+from gitosis import util
+
 log = logging.getLogger('gitosis.ssh')
 
 _ACCEPTABLE_USER_RE = re.compile(r'^[a-zA-Z][a-zA-Z0-9_.-]*(@[a-zA-Z][a-zA-Z0-9.-]*)?$')
