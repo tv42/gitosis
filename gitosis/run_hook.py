@@ -50,8 +50,9 @@ def post_update(cfg, git_dir):
         )
     principals = util.getSSHPrincipalsPath(config=cfg)
     ssh_principals.writePrincipals(
+        cfg=cfg,
         path=principals,
-        principals=os.path.join(export, 'keydir/principals'),
+        users=os.path.join(export, 'keydir/users'),
         )
 
 class Main(app.App):
