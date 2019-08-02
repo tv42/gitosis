@@ -247,7 +247,7 @@ what the identity is, try::
 from your principals in the key, only git and gitosis-admin are allowed. You must have at least one of this allowed principals in your key, to get access to your gitosis-served repos.
 Access is only given, if you have one of the allowed principals in your certificate, and your key ID is listed as member in the repo
 
-### parallel use of principals/certificates an pubkeys
+## parallel use of principals/certificates an pubkeys
 
 It is possible, to use pubkeys in parallel to these principals from certificates. Just as described above. If you have a user, which has no certificate from your ssh-CA, just add his
 public-sshkey in the keydir. (not tested now)
