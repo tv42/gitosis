@@ -23,7 +23,7 @@ def serve_principal(cfg, sshUser, principals):
               +'no-X11-forwarding,no-agent-forwarding,no-pty %(principals)s')
 
     if '@' in sshUser:
-        for user in [ sshUser, sshUser.split('@')[0] ]:
+        for user in [ sshUser.split('@')[0] ]:
             print TEMPLATE % dict(user=user,
                                   principals=util.getAllowedSSHPrincipals(config=cfg))
     else:
