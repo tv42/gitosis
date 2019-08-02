@@ -204,7 +204,7 @@ documentation for it.
 .. _THIS: https://framkant.org/2017/07/scalable-access-control-using-openssh-certificates/
 .. _GITLABS: https://docs.gitlab.com/ee/administration/operations/ssh_certificates.html
 
-To use principals and ssh-certificates with this fork of gitosis, please add this snippet to your sshd_config on your git-server
+To use principals and ssh-certificates with this fork of gitosis, please add this snippet to your sshd_config on your git-server::
 
     Match User git
         AuthorizedPrincipalsCommandUser git
@@ -213,14 +213,14 @@ To use principals and ssh-certificates with this fork of gitosis, please add thi
 This will run the command as user "git", which will you have installed, when you serve your gitrepos with gitosis. 
 %i is the key-identity of your certificate, which will you give on your sign-process to the user-certificate.
 
-Then you need an additional line in your gitosis.conf in the [gitosis]-section
+Then you need an additional line in your gitosis.conf in the [gitosis]-section::
 
     [gitosis]
     ...
     allowedPrincipals = git gitosis-admin
 
 In the members-line of your gitosis.conf, you have to write down the key-identity (which is passed as %i in you sshd_config). If you are not sure,
-what the identity is, try
+what the identity is, try::
 
     ssh-keygen -L -f ~/.ssh/id_rsa-cert.pub
 
