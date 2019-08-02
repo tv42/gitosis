@@ -25,6 +25,7 @@ def serve_principal(cfg, sshUser, principals):
                           principals=util.getAllowedSSHPrincipals(config=cfg))
 
 
+
 class Main(app.App):
     def create_parser(self):
         parser = super(Main, self).create_parser()
