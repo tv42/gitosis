@@ -75,6 +75,12 @@ it to running ``gitosis-serve``. Run::
 	sudo -H -u git gitosis-init <FILENAME.pub
 	# (or just copy-paste the public key when prompted)
 
+If you want to use ssh-certificates with principals, you need a file with
+your admin-user in it. Name it adminuser.txt, only one line with your admins
+username in it and run::
+
+        sudo -H -u git gitosis-init <adminuser.txt
+
 then just ``git clone git@SERVER:gitosis-admin.git``, and you get a
 repository with SSH keys as ``keys/USER.pub`` and a ``gitosis.conf``
 where you can configure who has access to what.
