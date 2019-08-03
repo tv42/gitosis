@@ -24,6 +24,8 @@ def serve_principal(cfg, sshUser, principals):
     print TEMPLATE % dict(user=sshUser,
                           principals=util.getAllowedSSHPrincipals(config=cfg))
 
+    return TEMPLATE % dict(user=sshUser,
+                          principals=util.getAllowedSSHPrincipals(config=cfg))
 
 
 class Main(app.App):
