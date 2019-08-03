@@ -21,7 +21,7 @@ def serve_principal(cfg, sshUser, principals):
     TEMPLATE=('command="gitosis-serve %(user)s",no-port-forwarding,'
               +'no-X11-forwarding,no-agent-forwarding,no-pty %(principals)s')
 
-    for p in  util.getAllowedSSHPrincipals(config=cfg):
+    for p in  [ util.getAllowedSSHPrincipals(config=cfg) ] : 
         print TEMPLATE % dict(user=sshUser, principals=p)
 
         return TEMPLATE % dict(user=sshUser, principals=p)
