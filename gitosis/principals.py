@@ -45,6 +45,7 @@ class Main(app.App):
 
         if sshUser != "":
             log.info('Running serve_principal for user %s', sshUser)
+            log.debug('serve_principal: %s', serve_principal(cfg, sshUser, principals))
             serve_principal(cfg, sshUser, principals)
             log.info('Done.')
 #
