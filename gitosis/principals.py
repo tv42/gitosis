@@ -24,9 +24,6 @@ def serve_principal(cfg, sshUser, principals):
     for p in   util.getAllowedSSHPrincipals(config=cfg).split()  : 
         print TEMPLATE % dict(user=sshUser, principals=p)
 
-        log.debug(TEMPLATE % dict(user=sshUser, principals=p))
-
-
 class Main(app.App):
     def create_parser(self):
         parser = super(Main, self).create_parser()
