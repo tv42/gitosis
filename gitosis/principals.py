@@ -24,7 +24,7 @@ def serve_principal(cfg, sshUser, principals):
     for p in   util.getAllowedSSHPrincipals(config=cfg).split()  : 
         print TEMPLATE % dict(user=sshUser, principals=p)
 
-        return TEMPLATE % dict(user=sshUser, principals=p)
+        log.debug(TEMPLATE % dict(user=sshUser, principals=p))
 
 
 class Main(app.App):
@@ -46,7 +46,7 @@ class Main(app.App):
 
         if sshUser != "":
             log.info('Running serve_principal for user %s', sshUser)
-            log.debug('serve_principal: %s', serve_principal(cfg, sshUser, principals))
+            #log.debug('serve_principal: %s', serve_principal(cfg, sshUser, principals))
             serve_principal(cfg, sshUser, principals)
             log.info('Done.')
 #
