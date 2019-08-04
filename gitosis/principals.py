@@ -22,7 +22,7 @@ def serve_principal(cfg, sshUser, principals):
               +'no-X11-forwarding,no-agent-forwarding,no-pty %(principals)s')
 
     for p in   util.getAllowedSSHPrincipals(config=cfg).split()  : 
-        print TEMPLATE % dict(user=sshUser, principals=p)
+        yield print TEMPLATE % dict(user=sshUser.partition('@')[0], principals=p)
 
 class Main(app.App):
     def create_parser(self):
@@ -44,12 +44,5 @@ class Main(app.App):
         if sshUser != "":
             log.info('Running serve_principal for user %s', sshUser)
             #log.debug('serve_principal: %s', serve_principal(cfg, sshUser, principals))
-            serve_principal(cfg, sshUser, principals)
+            print serve_principal(cfg, sshUser, principals)
             log.info('Done.')
-#
-#        if hook == 'post-update':
-#            log.info('Running hook %s', hook)
-#            post_update(cfg, git_dir)
-#            log.info('Done.')
-#        else:
-#            log.warning('Ignoring unknown hook: %r', hook)
