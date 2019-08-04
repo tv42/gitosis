@@ -22,7 +22,7 @@ def serve_principal(cfg, sshUser, principals):
               +'no-X11-forwarding,no-agent-forwarding,no-pty %(principals)s')
 
     for p in   util.getAllowedSSHPrincipals(config=cfg).split()  : 
-        yield print TEMPLATE % dict(user=sshUser.partition('@')[0], principals=p)
+        yield TEMPLATE % dict(user=sshUser.partition('@')[0], principals=p)
 
 class Main(app.App):
     def create_parser(self):
