@@ -216,6 +216,12 @@ To use principals and ssh-certificates with this fork of gitosis, please add thi
         AuthorizedPrincipalsCommandUser git
         AuthorizedPrincipalsCommand    /usr/local/bin/gitosis-authorized-principals %i 
 
+And for all users except git, use only principal-files::
+    
+    Match User !git,*
+        AuthorizedPrincipalsFile /etc/ssh/userprincipals/%u
+
+
 This will run the command as user "git", which will you have installed, when you serve your gitrepos with gitosis. 
 %i is the key-identity of your certificate, which will you give on your sign-process to the user-certificate.
 
