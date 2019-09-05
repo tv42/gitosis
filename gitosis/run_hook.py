@@ -69,9 +69,6 @@ class Main(app.App):
         if git_dir is None:
             log.error('Must have GIT_DIR set in enviroment')
             sys.exit(1)
-        else:
-            log.debug("GIT_DIR", git_dir)
-
 
         if hook == 'post-update':
             log.info('Running hook %s', hook)
