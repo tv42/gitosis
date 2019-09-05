@@ -62,7 +62,7 @@ def filterAuthorizedKeys(fp):
 
 def writeAuthorizedKeys(path, keydir):
     tmp = '%s.%d.tmp' % (path, os.getpid())
-    log.debug("writeAuthorizedKeys",tmp)
+    log.debug("writeAuthorizedKeys " + str(tmp) )
     try:
         in_ = file(path)
     except IOError, e:
