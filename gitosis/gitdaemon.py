@@ -66,6 +66,8 @@ def set_export_ok(config):
         to_recurse = []
         repos = []
         for dirname in dirnames:
+            if dirname == '.git':
+                continue
             if dirname.endswith('.git'):
                 repos.append(dirname)
             else:
