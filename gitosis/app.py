@@ -79,7 +79,7 @@ class App(object):
             pass
         else:
             try:
-                symbolic = logging._levelNames[loglevel]
+                symbolic = logging._nameToLevel[loglevel]
             except KeyError:
                 log.warning(
                     'Ignored invalid loglevel configuration: %r',
