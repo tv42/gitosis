@@ -36,7 +36,7 @@ def init(
     if _git is None:
         _git = 'git'
 
-    util.mkdir(path, 0750)
+    util.mkdir(path, 0o750)
     args = [
         _git,
         '--git-dir=.',
@@ -131,7 +131,7 @@ class GitCheckoutIndexError(GitExportError):
 def export(git_dir, path):
     try:
         os.mkdir(path)
-    except OSError, e:
+    except OSError as e:
         if e.errno == errno.EEXIST:
             pass
         else:
@@ -185,7 +185,7 @@ def has_initial_commit(git_dir):
         stdout=subprocess.PIPE,
         close_fds=True,
         )
-    got = child.stdout.read()
+    got = child.stdout.read().decode('utf-8')
     returncode = child.wait()
     if returncode != 0:
         raise GitRevParseError('exit status %d' % returncode)

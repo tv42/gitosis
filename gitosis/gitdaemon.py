@@ -2,7 +2,7 @@ import errno
 import logging
 import os
 
-from ConfigParser import NoSectionError, NoOptionError
+from configparser import NoSectionError, NoOptionError
 
 log = logging.getLogger('gitosis.gitdaemon')
 
@@ -14,13 +14,13 @@ def export_ok_path(repopath):
 
 def allow_export(repopath):
     p = export_ok_path(repopath)
-    file(p, 'a').close()
+    open(p, 'a').close()
 
 def deny_export(repopath):
     p = export_ok_path(repopath)
     try:
         os.unlink(p)
-    except OSError, e:
+    except OSError as e:
         if e.errno == errno.ENOENT:
             pass
         else:

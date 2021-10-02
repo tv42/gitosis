@@ -1,5 +1,5 @@
 import logging
-from ConfigParser import NoSectionError, NoOptionError
+from configparser import NoSectionError, NoOptionError
 
 def _getMembership(config, user, seen):
     log = logging.getLogger('gitosis.group.getMembership')

@@ -3,8 +3,8 @@ from gitosis.test.util import assert_raises
 
 import logging
 import os
-from cStringIO import StringIO
-from ConfigParser import RawConfigParser
+from io import StringIO
+from configparser import RawConfigParser
 
 from gitosis import serve
 from gitosis import repository
@@ -354,7 +354,7 @@ def test_push_inits_subdir_parent_missing():
         )
     eq(os.listdir(repositories), ['foo'])
     foo = os.path.join(repositories, 'foo')
-    util.check_mode(foo, 0750, is_dir=True)
+    util.check_mode(foo, 0o750, is_dir=True)
     eq(os.listdir(foo), ['bar.git'])
     assert os.path.isfile(os.path.join(repositories, 'foo', 'bar.git', 'HEAD'))
 
@@ -366,7 +366,7 @@ def test_push_inits_subdir_parent_exists():
     os.mkdir(repositories)
     foo = os.path.join(repositories, 'foo')
     # silly mode on purpose; not to be touched
-    os.mkdir(foo, 0751)
+    os.mkdir(foo, 0o751)
     cfg.set('gitosis', 'repositories', repositories)
     generated = os.path.join(tmp, 'generated')
     os.mkdir(generated)
@@ -380,7 +380,7 @@ def test_push_inits_subdir_parent_exists():
         command="git-receive-pack 'foo/bar.git'",
         )
     eq(os.listdir(repositories), ['foo'])
-    util.check_mode(foo, 0751, is_dir=True)
+    util.check_mode(foo, 0o751, is_dir=True)
     eq(os.listdir(foo), ['bar.git'])
     assert os.path.isfile(os.path.join(repositories, 'foo', 'bar.git', 'HEAD'))
 

@@ -1,6 +1,6 @@
 from nose.tools import eq_ as eq, assert_raises
 
-from ConfigParser import RawConfigParser
+from configparser import RawConfigParser
 
 from gitosis import group
 
