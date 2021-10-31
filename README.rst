@@ -24,7 +24,17 @@ more information.
 
 You can get ``gitosis`` via ``git`` by saying::
 
-    git clone https://github.com/tv42/gitosis.git
+    This repositories are from jakob@schuerz.at, support python3 and ssh-certificates
+    git clone git@codeberg.org:xundeenergie/gitosis.git (fetch)
+    git clone git@github.com:xundeenergie/gitosis.git (fetch)
+    git clone git@git.schuerz.at:public/gitosis.git (fetch)
+
+    This repository translates gitosis to python3, but not fully.
+    git clone git@github.com:mgukov/gitosis.git (push)
+
+    Original repository seems unmaintained
+    git clone git@github.com:tv42/gitosis.git (fetch)
+
 
 And install it via::
 
