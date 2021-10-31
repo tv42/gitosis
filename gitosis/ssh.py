@@ -76,11 +76,13 @@ def writeAuthorizedKeys(path, keydir):
         try:
             if in_ is not None:
                 for line in filterAuthorizedKeys(in_):
-                    print >>out, line
+                    #print >>out, line
+                    print(line, end="", file=out)
 
             keygen = readKeys(keydir)
             for line in generateAuthorizedKeys(keygen):
-                print >>out, line
+                #print >>out, line
+                print(line, end="", file=out)
 
             os.fsync(out)
         finally:

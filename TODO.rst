@@ -40,9 +40,9 @@
 
 - can't trust "~"::
 
-	[0 tv@musti ~]$ sudo python -c 'import os; print os.path.expanduser("~")'
+	[0 tv@musti ~]$ sudo python -c 'import os; print(os.path.expanduser("~"))'
 	/home/tv
-	[0 tv@musti ~]$ sudo -H python -c 'import os; print os.path.expanduser("~")'
+	[0 tv@musti ~]$ sudo -H python -c 'import os; print(os.path.expanduser("~"))'
 	/root
 
 - command line options
