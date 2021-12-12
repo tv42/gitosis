@@ -45,6 +45,7 @@ arbitrary commands.
             'gitosis-serve = gitosis.serve:Main.run',
             'gitosis-run-hook = gitosis.run_hook:Main.run',
             'gitosis-init = gitosis.init:Main.run',
+            'gitosis-authorized-principals = gitosis.principals:Main.run',
             ],
         },
 

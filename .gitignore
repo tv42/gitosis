@@ -5,3 +5,5 @@
 /apidocs
 /gitosis/test/tmp
 /.coverage
+.idea
+venv

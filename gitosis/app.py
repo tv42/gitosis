@@ -3,7 +3,7 @@ import sys
 import logging
 import optparse
 import errno
-import ConfigParser
+import configparser
 
 log = logging.getLogger('gitosis.app')
 
@@ -31,14 +31,14 @@ class App(object):
         cfg = self.create_config(options)
         try:
             self.read_config(options, cfg)
-        except CannotReadConfigError, e:
+        except CannotReadConfigError as e:
             log.error(str(e))
             sys.exit(1)
         self.setup_logging(cfg)
         self.handle_args(parser, cfg, options, args)
 
     def setup_basic_logging(self):
-        logging.basicConfig()
+        logging.basicConfig(filename='/home/git/gitosis.log')
 
     def create_parser(self):
         parser = optparse.OptionParser()
@@ -53,13 +53,13 @@ class App(object):
         return parser
 
     def create_config(self, options):
-        cfg = ConfigParser.RawConfigParser()
+        cfg = configparser.RawConfigParser()
         return cfg
 
     def read_config(self, options, cfg):
         try:
-            conffile = file(options.config)
-        except (IOError, OSError), e:
+            conffile = open(options.config)
+        except (IOError, OSError) as e:
             if e.errno == errno.ENOENT:
                 # special case this because gitosis-init wants to
                 # ignore this particular error case
@@ -74,12 +74,12 @@ class App(object):
     def setup_logging(self, cfg):
         try:
             loglevel = cfg.get('gitosis', 'loglevel')
-        except (ConfigParser.NoSectionError,
-                ConfigParser.NoOptionError):
+        except (configparser.NoSectionError,
+                configparser.NoOptionError):
             pass
         else:
             try:
-                symbolic = logging._levelNames[loglevel]
+                symbolic = logging._nameToLevel[loglevel]
             except KeyError:
                 log.warning(
                     'Ignored invalid loglevel configuration: %r',

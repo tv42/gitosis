@@ -1,8 +1,8 @@
 from nose.tools import eq_ as eq
 
 import os
-from ConfigParser import RawConfigParser
-from cStringIO import StringIO
+from configparser import RawConfigParser
+from io import StringIO
 
 from gitosis import init, repository, run_hook
 from gitosis.test.util import maketemp, readFile

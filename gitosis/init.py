@@ -6,10 +6,11 @@ import errno
 import logging
 import os
 import sys
+import re
 
 from pkg_resources import resource_filename
-from cStringIO import StringIO
-from ConfigParser import RawConfigParser
+from io import StringIO
+from configparser import RawConfigParser
 
 from gitosis import repository
 from gitosis import run_hook
@@ -32,19 +33,32 @@ class InsecureSSHKeyUsername(Exception):
         return '%s: %s' % (self.__doc__, ': '.join(self.args))
 
 def ssh_extract_user(pubkey):
-    _, user = pubkey.rsplit(None, 1)
+    if not bool(re.search(r"\s", pubkey)):
+        _, user = pubkey.rsplit(None, 1)
+    else:
+        user = pubkey.strip()
     if ssh.isSafeUsername(user):
         return user
     else:
         raise InsecureSSHKeyUsername(repr(user))
 
 def initial_commit(git_dir, cfg, pubkey, user):
+    log.debug('create initial commit')
+    log.info('User: ' + user)
+    if pubkey is None:
+        keyfile = 'keydir/principals'
+        content = user
+    else:
+        keyfile = 'keydir/%s.pub' % user
+        content = pubkey
+    log.debug('keyfile' + keyfile)
+    log.debug('content' + content)
     repository.fast_import(
         git_dir=git_dir,
         commit_msg='Automatic creation of gitosis repository.',
         committer='Gitosis Admin <%s>' % user,
         files=[
-            ('keydir/%s.pub' % user, pubkey),
+            (keyfile, content),
             ('gitosis.conf', cfg),
             ],
         )
@@ -54,7 +68,7 @@ def symlink_config(git_dir):
     tmp = '%s.%d.tmp' % (dst, os.getpid())
     try:
         os.unlink(tmp)
-    except OSError, e:
+    except OSError as e:
         if e.errno == errno.ENOENT:
             pass
         else:
@@ -80,15 +94,18 @@ def init_admin_repository(
 
     # can't rely on setuptools and all kinds of distro packaging to
     # have kept our templates executable, it seems
-    os.chmod(os.path.join(git_dir, 'hooks', 'post-update'), 0755)
+    os.chmod(os.path.join(git_dir, 'hooks', 'post-update'), 0o755)
 
     if not repository.has_initial_commit(git_dir):
         log.info('Making initial commit...')
         # ConfigParser does not guarantee order, so jump through hoops
         # to make sure [gitosis] is first
         cfg_file = StringIO()
-        print >>cfg_file, '[gitosis]'
-        print >>cfg_file
+        print('[gitosis]', file=cfg_file)
+        #print('', end="", file=cfg_file)
+
+        #print >>cfg_file, '[gitosis]'
+        #print >>cfg_file
         cfg = RawConfigParser()
         cfg.add_section('group gitosis-admin')
         cfg.set('group gitosis-admin', 'members', user)
@@ -119,11 +136,14 @@ class Main(app.App):
     def handle_args(self, parser, cfg, options, args):
         super(Main, self).handle_args(parser, cfg, options, args)
 
-        os.umask(0022)
+        os.umask(0o022)
 
         log.info('Reading SSH public key...')
         pubkey = read_ssh_pubkey()
         user = ssh_extract_user(pubkey)
+        if not " " in pubkey:
+            pubkey = None
+        log.debug("pubkey: %s", pubkey)
         if user is None:
             log.error('Cannot parse user from SSH public key.')
             sys.exit(1)
@@ -141,7 +161,7 @@ class Main(app.App):
             user=user,
             )
         log.info('Running post-update hook...')
-        util.mkdir(os.path.expanduser('~/.ssh'), 0700)
+        util.mkdir(os.path.expanduser('~/.ssh'), 0o700)
         run_hook.post_update(cfg=cfg, git_dir=admin_repository)
         log.info('Symlinking ~/.gitosis.conf to repository...')
         symlink_config(git_dir=admin_repository)

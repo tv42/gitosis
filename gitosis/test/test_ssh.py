@@ -1,7 +1,7 @@
 from nose.tools import eq_ as eq, assert_raises
 
 import os
-from cStringIO import StringIO
+from io import StringIO
 
 from gitosis import ssh
 from gitosis.test.util import mkdir, maketemp, writeFile, readFile
@@ -171,7 +171,7 @@ class WriteAuthorizedKeys_Test(object):
     def test_simple(self):
         tmp = maketemp()
         path = os.path.join(tmp, 'authorized_keys')
-        f = file(path, 'w')
+        f = open(path, 'w')
         try:
             f.write('''\
 # foo

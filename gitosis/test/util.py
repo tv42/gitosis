@@ -9,7 +9,7 @@ import sys
 def mkdir(*a, **kw):
     try:
         os.mkdir(*a, **kw)
-    except OSError, e:
+    except OSError as e:
         if e.errno == errno.EEXIST:
             pass
         else:
@@ -27,7 +27,7 @@ def maketemp():
     tmp = os.path.join(tmp, name)
     try:
         shutil.rmtree(tmp)
-    except OSError, e:
+    except OSError as e:
         if e.errno == errno.ENOENT:
             pass
         else:
@@ -37,7 +37,7 @@ def maketemp():
 
 def writeFile(path, content):
     tmp = '%s.tmp' % path
-    f = file(tmp, 'w')
+    f = open(tmp, 'w')
     try:
         f.write(content)
     finally:
@@ -45,7 +45,7 @@ def writeFile(path, content):
     os.rename(tmp, path)
 
 def readFile(path):
-    f = file(path)
+    f = open(path)
     try:
         data = f.read()
     finally:
@@ -58,7 +58,7 @@ def assert_raises(excClass, callableObj, *args, **kwargs):
     """
     try:
         callableObj(*args, **kwargs)
-    except excClass, e:
+    except excClass as e:
         return e
     else:
         if hasattr(excClass,'__name__'): excName = excClass.__name__

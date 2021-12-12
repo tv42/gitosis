@@ -24,7 +24,17 @@ more information.
 
 You can get ``gitosis`` via ``git`` by saying::
 
-    git clone https://github.com/tv42/gitosis.git
+    This repositories are from jakob@schuerz.at, support python3 and ssh-certificates
+    git clone git@codeberg.org:xundeenergie/gitosis.git (fetch)
+    git clone git@github.com:xundeenergie/gitosis.git (fetch)
+    git clone git@git.schuerz.at:public/gitosis.git (fetch)
+
+    This repository translates gitosis to python3, but not fully.
+    git clone git@github.com:mgukov/gitosis.git (push)
+
+    Original repository seems unmaintained
+    git clone git@github.com:tv42/gitosis.git (fetch)
+
 
 And install it via::
 
@@ -74,6 +84,12 @@ it to running ``gitosis-serve``. Run::
 
 	sudo -H -u git gitosis-init <FILENAME.pub
 	# (or just copy-paste the public key when prompted)
+
+If you want to use ssh-certificates with principals, you need a file with
+your admin-user in it. Name it adminuser.txt, only one line with your admins
+username in it and run::
+
+        sudo -H -u git gitosis-init <adminuser.txt
 
 then just ``git clone git@SERVER:gitosis-admin.git``, and you get a
 repository with SSH keys as ``keys/USER.pub`` and a ``gitosis.conf``
@@ -190,12 +206,83 @@ Note that this short snippet is not a substitute for reading and
 understanding the relevant documentation.
 
 
+Using ssh-certificates and principals
+=====================================
+
+``ssh certificates`` are a new feature of openssh, where you setup your own ssh-CA
+and you sign all you host- and user-pubkeys. 
+
+If you want to use certificates ans principals, please visit THIS_ and THIS_ website.
+To find out more about the AuthorizedPrincipalCommand in sshd_config, please consult GITLABS_ 
+documentation for it.
+
+.. _THIS: https://ef.gy/hardening-ssh
+.. _THIS: https://framkant.org/2017/07/scalable-access-control-using-openssh-certificates/
+.. _GITLABS: https://docs.gitlab.com/ee/administration/operations/ssh_certificates.html
+
+To use principals and ssh-certificates with this fork of gitosis, please add this snippet to your sshd_config on your git-server::
+
+    Match User git
+        AuthorizedPrincipalsCommandUser git
+        AuthorizedPrincipalsCommand    /usr/local/bin/gitosis-authorized-principals %i 
+
+And for all users except git, use only principal-files::
+    
+    Match User !git,*
+        AuthorizedPrincipalsFile /etc/ssh/userprincipals/%u
+
+
+This will run the command as user "git", which will you have installed, when you serve your gitrepos with gitosis. 
+%i is the key-identity of your certificate, which will you give on your sign-process to the user-certificate.
+
+Then you need an additional line in your gitosis.conf in the [gitosis]-section::
+
+    [gitosis]
+    ...
+    allowedPrincipals = git gitosis-admin
+
+In the members-line of your gitosis.conf, you have to write down the key-identity (which is passed as %i in you sshd_config). If you are not sure,
+what the identity is, try::
+
+    ssh-keygen -L -f ~/.ssh/id_rsa-cert.pub
+
+    /home/myusername/.ssh/id_rsa-cert.pub:
+        Type: ssh-rsa-cert-v01@openssh.com user certificate
+        Public key: RSA-CERT SHA256:cjLH4l45G32zOaJBjv8Udnr7bkwHRNB3nAz0a6SCOl0
+        Signing CA: ED25519 SHA256:9bMENs+blen§naslr§BJEN421I5ckbu4mvpnktiHdUs (using ssh-ed25519)
+        Key ID: "myusername"
+        Serial: 4
+        Valid: from 2019-08-02T02:29:00 to 2020-08-01T02:30:20
+        Principals: 
+                myusername
+                principal2
+                git
+                gitosis-admin
+        Critical Options: (none)
+        Extensions: 
+                permit-X11-forwarding
+                permit-agent-forwarding
+                permit-port-forwarding
+                permit-pty
+                permit-user-rc
+
+from your principals in the key, only git and gitosis-admin are allowed. You must have at least one of this allowed principals in your key, to get access to your gitosis-served repos.
+Access is only given, if you have one of the allowed principals in your certificate, and your key ID is listed as member in the repo
+
+Parallel use of principals/certificates an pubkeys
+--------------------------------------------------
+
+It is possible, to use pubkeys in parallel to these principals from certificates. Just as described above. If you have a user, which has no certificate from your ssh-CA, just add his
+public-sshkey in the keydir. (not tested now)
+
 
 Contact
 =======
 
 You can email the author at ``tv@eagain.net``, or hop on
 ``irc.freenode.net`` channel ``#git`` and hope for the best.
+
+For ssh-certificates and principals, please contact wertstoffe@xundeenergie.at
 
 There will be more, keep an eye on http://eagain.net/ and/or the git
 mailing list.
